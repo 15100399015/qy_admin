@@ -2,21 +2,21 @@
 
 import Layout from "@/layout";
 
-const chartsRouter = {
-  path: "/charts",
+const videoRouter = {
+  path: "/video",
   component: Layout,
   redirect: "noRedirect",
-  name: "Charts",
+  name: "Video",
   meta: {
-    title: "图表",
-    icon: "chart"
+    title: "视频",
+    icon: "video"
   },
   children: [
     {
       path: "keyboard",
       component: () => import("@/views/charts/keyboard"),
       name: "KeyboardChart",
-      meta: { title: "Keyboard Chart", noCache: true }
+      meta: { title: "视频数据", noCache: true }
     },
     {
       path: "line",

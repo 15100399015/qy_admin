@@ -54,7 +54,6 @@
 <script>
 // 验证器
 import { validUsername } from "@/utils/validate";
-
 export default {
   name: "Login",
   data() {
@@ -75,10 +74,12 @@ export default {
       }
     };
     return {
+      // 表单项
       loginForm: {
         username: "",
         password: "",
       },
+      // 表单验证规则
       loginRules: {
         username: [
           { required: true, trigger: "change", validator: validateUsername },
@@ -87,23 +88,25 @@ export default {
           { required: true, trigger: "change", validator: validatePassword },
         ],
       },
+      // 是否加载
       loading: false,
+      // 重定向url
       redirect: undefined,
-      otherQuery: {},
     };
   },
   watch: {
+    // 路由发生变化执行
     $route: {
       handler: function (route) {
         const query = route.query;
         if (query) {
           this.redirect = query.redirect;
-          this.otherQuery = this.getOtherQuery(query);
         }
       },
       immediate: true,
     },
   },
+  // 加载完成自动获取焦点
   mounted() {
     if (this.loginForm.username === "") {
       this.$refs.username.focus();
@@ -114,23 +117,18 @@ export default {
   methods: {
     // 登录逻辑
     handleLogin() {
-      // this.$router.push({ path: "/admin" });
-      // return;
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true;
           this.$store
             .dispatch("user/login", this.loginForm)
             .then(() => {
-              alert("应该跳转了");
               this.$router.push({
                 path: this.redirect || "/",
-                query: this.otherQuery,
               });
               this.loading = false;
             })
             .catch(() => {
-              alert("失败了");
               this.loading = false;
             });
         } else {
@@ -139,22 +137,11 @@ export default {
         }
       });
     },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== "redirect") {
-          acc[cur] = query[cur];
-        }
-        return acc;
-      }, {});
-    },
   },
 };
 </script>
 
 <style lang="scss">
-/* 修复input 背景不协调 和光标变色 */
-/* Detail see https://github.com/PanJiaChen/vue-element-admin/pull/927 */
-
 $bg: #283443;
 $light_gray: #fff;
 $cursor: #fff;
@@ -218,7 +205,6 @@ $light_gray: #eee;
     overflow: hidden;
   }
 
-
   .svg-container {
     padding: 6px 5px 6px 15px;
     color: $dark_gray;
@@ -238,7 +224,5 @@ $light_gray: #eee;
       font-weight: bold;
     }
   }
-
-
 }
 </style>

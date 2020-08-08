@@ -47,6 +47,7 @@ module.exports = [
     }
   },
 
+  
   // get user info
   {
     url: '/vue-element-admin/user/info\.*',

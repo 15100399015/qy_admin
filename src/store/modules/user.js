@@ -2,8 +2,10 @@
 import { login, logout, getInfo } from "@/api/user";
 // token 相关
 import { getToken, setToken, removeToken } from "@/utils/auth";
+// 路由
 import router, { resetRouter } from "@/router";
 
+// 用户状态信息
 const state = {
   token: getToken(),
   name: "",
@@ -48,7 +50,7 @@ const actions = {
     });
   },
 
-  // get user info
+  // 获取用户信息
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token)
@@ -61,8 +63,8 @@ const actions = {
 
           const { roles, name, avatar, introduction } = data;
 
-          // roles must be a non-empty array
-          if (!roles || roles.length <= 0) {
+          // 
+          if (!roles) {
             reject("getInfo: roles must be a non-null array!");
           }
 
@@ -78,7 +80,7 @@ const actions = {
     });
   },
 
-  // user logout
+  // 登出
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout(state.token)
@@ -89,7 +91,6 @@ const actions = {
           resetRouter();
 
           // reset visited views and cached views
-          // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
           dispatch("tagsView/delAllViews", null, { root: true });
 
           resolve();
@@ -100,7 +101,7 @@ const actions = {
     });
   },
 
-  // remove token
+  // 删除 token
   resetToken({ commit }) {
     return new Promise(resolve => {
       commit("SET_TOKEN", "");
@@ -110,7 +111,7 @@ const actions = {
     });
   },
 
-  // dynamically modify permissions
+  // 动态修改权限
   async changeRoles({ commit, dispatch }, role) {
     const token = role + "-token";
 

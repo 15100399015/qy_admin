@@ -1,5 +1,5 @@
 import request from "@/utils/request";
-
+// 登录
 export function login(data) {
   return request({
     url: "/auth/login",
@@ -7,18 +7,17 @@ export function login(data) {
     data
   });
 }
-
-export function getInfo(token) {
+// 获取用户信息
+export function getInfo() {
   return request({
-    url: "/vue-element-admin/user/info",
-    method: "get",
-    params: { token }
+    url: "/auth/getInfo",
+    method: "get"
   });
 }
-
+// 退出登录
 export function logout() {
   return request({
-    url: "/vue-element-admin/user/logout",
+    url: "/auth/logout",
     method: "post"
   });
 }
