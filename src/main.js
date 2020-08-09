@@ -1,42 +1,23 @@
 import Vue from "vue";
-
 import Cookies from "js-cookie";
-
-import "normalize.css/normalize.css"; // a modern alternative to CSS resets
-
+import "normalize.css/normalize.css"; // 重置css
 import Element from "element-ui";
-import "./styles/element-variables.scss";
-
-import "@/styles/index.scss"; // global css
-
-import App from "./App";
-import store from "./store";
-import router from "./router";
-
-import "./icons"; // icon
-import "./permission"; // permission control
+import "./styles/element-variables.scss"; // element css变量
+import "@/styles/index.scss"; // 全局css
+import App from "./App"; // 跟组件
+import store from "./store"; //仓库
+import router from "./router"; // 路由
+import "./icons"; // 图标
+import "./permission"; // 权限认证
 import "./utils/error-log"; // error log
+import * as filters from "./filters"; // 全局过滤器
 
-import * as filters from "./filters"; // global filters
-
-/**
- * If you don't want to use mock-server
- * you want to use MockJs for mock api
- * you can execute: mockXHR()
- *
- * Currently MockJs will be used in the production environment,
- * please remove it before going online ! ! !
- */
-if (process.env.NODE_ENV === "production") {
-  const { mockXHR } = require("../mock");
-  mockXHR();
-}
-
+// 使用element
 Vue.use(Element, {
   size: Cookies.get("size") || "medium" // set element-ui default size
 });
 
-// register global utility filters
+// 注册全局过滤器
 Object.keys(filters).forEach(key => {
   Vue.filter(key, filters[key]);
 });

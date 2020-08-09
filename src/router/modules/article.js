@@ -2,20 +2,20 @@
 
 import Layout from "@/layout";
 
-const videoRouter = {
-  path: "/video",
+const articleRouter = {
+  path: "/article",
   component: Layout,
   redirect: "noRedirect",
-  name: "Video",
+  name: "Article",
   meta: {
-    title: "视频",
-    icon: "video"
+    title: "文章",
+    icon: "article"
   },
   children: [
     {
       path: "data",
       component: () => import("@/views/video/components/data"),
-      name: "video",
+      name: "article",
       meta: { title: "视频管理", icon: "eye-open" }
     },
     {
@@ -33,4 +33,4 @@ const videoRouter = {
   ]
 };
 
-export default videoRouter;
+export default articleRouter;

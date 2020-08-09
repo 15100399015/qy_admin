@@ -27,7 +27,8 @@ router.beforeEach(async (to, from, next) => {
       next({ path: "/" });
       NProgress.done(); //终止进度条
     } else {
-      // 确定用户是否通过getInfo获取了权限角色
+      // 如果不是登录页
+      // 获取当前的权限/如果有权限则直接进入
       const hasRoles = store.getters.roles && store.getters.roles.length > 0;
       if (hasRoles) {
         next();
