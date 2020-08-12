@@ -11,7 +11,7 @@ const state = {
   name: "",
   avatar: "",
   introduction: "",
-  roles: []
+  roles: "",
 };
 
 const mutations = {
@@ -29,7 +29,7 @@ const mutations = {
   },
   SET_ROLES: (state, roles) => {
     state.roles = roles;
-  }
+  },
 };
 
 const actions = {
@@ -38,13 +38,13 @@ const actions = {
     const { username, password } = userInfo;
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password })
-        .then(response => {
+        .then((response) => {
           const { data } = response;
           commit("SET_TOKEN", data.token);
           setToken(data.token);
           resolve();
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     });
@@ -54,7 +54,7 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token)
-        .then(response => {
+        .then((response) => {
           const { data } = response;
 
           if (!data) {
@@ -63,7 +63,7 @@ const actions = {
 
           const { roles, name, avatar, introduction } = data;
 
-          // 
+          //
           if (!roles) {
             reject("getInfo: roles must be a non-null array!");
           }
@@ -74,7 +74,7 @@ const actions = {
           commit("SET_INTRODUCTION", introduction);
           resolve(data);
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     });
@@ -86,7 +86,7 @@ const actions = {
       logout(state.token)
         .then(() => {
           commit("SET_TOKEN", "");
-          commit("SET_ROLES", []);
+          commit("SET_ROLES", "");
           removeToken();
           resetRouter();
 
@@ -95,7 +95,7 @@ const actions = {
 
           resolve();
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     });
@@ -103,9 +103,9 @@ const actions = {
 
   // 删除 token
   resetToken({ commit }) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       commit("SET_TOKEN", "");
-      commit("SET_ROLES", []);
+      commit("SET_ROLES", "");
       removeToken();
       resolve();
     });
@@ -124,19 +124,19 @@ const actions = {
 
     // generate accessible routes map based on roles
     const accessRoutes = await dispatch("permission/generateRoutes", roles, {
-      root: true
+      root: true,
     });
     // dynamically add accessible routes
     router.addRoutes(accessRoutes);
 
     // reset visited views and cached views
     dispatch("tagsView/delAllViews", null, { root: true });
-  }
+  },
 };
 
 export default {
   namespaced: true,
   state,
   mutations,
-  actions
+  actions,
 };

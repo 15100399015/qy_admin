@@ -9,28 +9,16 @@ const articleRouter = {
   name: "Article",
   meta: {
     title: "文章",
-    icon: "article"
+    icon: "eye-open",
   },
   children: [
     {
       path: "data",
-      component: () => import("@/views/video/components/data"),
+      component: () => import("@/views/article/dataDisplay"),
       name: "article",
-      meta: { title: "视频管理", icon: "eye-open" }
+      meta: { title: "文章管理", icon: "eye-open" },
     },
-    {
-      path: "addData",
-      component: () => import("@/views/video/components/addData"),
-      name: "AddVideo",
-      meta: { title: "添加视频", icon: "eye-open" }
-    },
-    {
-      path: "repeat",
-      component: () => import("@/views/video/components/repeat"),
-      name: "repeat",
-      meta: { title: "重复数据", icon: "eye-open" }
-    }
-  ]
+  ],
 };
 
 export default articleRouter;

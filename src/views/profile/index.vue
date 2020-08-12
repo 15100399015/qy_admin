@@ -53,8 +53,8 @@ export default {
       this.user = {
         name: this.name,
         role: this.roles,
-        avatar: this.avatar || import("@/assets/images/default_profile.jpg"),
-        introduction: this.introduction || "用户没有填写信息哦",
+        avatar: this.avatar,
+        introduction: this.introduction,
       };
     },
   },

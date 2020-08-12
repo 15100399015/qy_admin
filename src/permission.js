@@ -17,7 +17,7 @@ router.beforeEach(async (to, from, next) => {
   // 设置页面标题
   document.title = getPageTitle(to.meta.title);
 
-  // 获取token确定用户是否登录
+  // 获取token确定用户是否已经登录
   const hasToken = getToken();
   // 如果登录了
   if (hasToken) {
@@ -29,28 +29,23 @@ router.beforeEach(async (to, from, next) => {
     } else {
       // 如果不是登录页
       // 获取当前的权限/如果有权限则直接进入
-      const hasRoles = store.getters.roles && store.getters.roles.length > 0;
+      const hasRoles = store.getters.roles;
       if (hasRoles) {
         next();
       } else {
         try {
           // 拿到用户身份信息
-          // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
           const { roles } = await store.dispatch("user/getInfo");
-
-          // generate accessible routes map based on roles
+          // 过滤权限路由
           const accessRoutes = await store.dispatch(
             "permission/generateRoutes",
             roles
           );
           // 动态添加路由
           router.addRoutes(accessRoutes);
-
-          // hack method to ensure that addRoutes is complete
-          // set the replace: true, so the navigation will not leave a history record
           next({ ...to, replace: true });
         } catch (error) {
-          // remove token and go to login page to re-login
+          //  移除token
           await store.dispatch("user/resetToken");
           Message.error(error || "Has Error");
           next(`/login?redirect=${to.path}`);
@@ -60,11 +55,10 @@ router.beforeEach(async (to, from, next) => {
     }
   } else {
     /* has no token*/
-    if (whiteList.indexOf(to.path) !== -1) {
-      // in the free login whitelist, go directly
+    if (whiteList.includes(to.path)) {
       next();
     } else {
-      // other pages that do not have permission to access are redirected to the login page.
+      // 其他没有访问权限的页面将被重定向到登录页面。
       next(`/login?redirect=${to.path}`);
       NProgress.done();
     }
@@ -72,6 +66,5 @@ router.beforeEach(async (to, from, next) => {
 });
 // 路由跳转之后
 router.afterEach(() => {
-  // finish progress bar
   NProgress.done();
 });

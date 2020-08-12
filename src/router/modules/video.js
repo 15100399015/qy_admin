@@ -9,28 +9,28 @@ const videoRouter = {
   name: "Video",
   meta: {
     title: "视频",
-    icon: "video"
+    icon: "lock",
   },
   children: [
     {
       path: "data",
-      component: () => import("@/views/video/components/data"),
+      component: () => import("@/views/video/dataDisplay"),
       name: "video",
-      meta: { title: "视频管理", icon: "eye-open" }
+      meta: { title: "视频管理", icon: "eye-open" },
     },
     {
       path: "addData",
-      component: () => import("@/views/video/components/addData"),
+      component: () => import("@/views/video/addData"),
       name: "AddVideo",
-      meta: { title: "添加视频", icon: "eye-open" }
+      meta: { title: "添加视频", icon: "eye-open" },
     },
     {
       path: "repeat",
-      component: () => import("@/views/video/components/repeat"),
+      component: () => import("@/views/video/repeatData"),
       name: "repeat",
-      meta: { title: "重复数据", icon: "eye-open" }
-    }
-  ]
+      meta: { title: "重复数据", icon: "eye-open" },
+    },
+  ],
 };
 
 export default videoRouter;
