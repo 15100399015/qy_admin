@@ -17,7 +17,6 @@
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
           v-model="loginForm.username"
           placeholder="用户名"
           name="username"
@@ -31,7 +30,6 @@
           <svg-icon icon-class="password" />
         </span>
         <el-input
-          ref="password"
           v-model="loginForm.password"
           placeholder="密码"
           name="password"
@@ -59,7 +57,7 @@ export default {
   data() {
     // 用户名验证
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      if (value.length < 5) {
         callback(new Error("请检查用户名"));
       } else {
         callback();
@@ -106,14 +104,6 @@ export default {
       immediate: true,
     },
   },
-  // 加载完成自动获取焦点
-  mounted() {
-    if (this.loginForm.username === "") {
-      this.$refs.username.focus();
-    } else if (this.loginForm.password === "") {
-      this.$refs.password.focus();
-    }
-  },
   methods: {
     // 登录逻辑
     handleLogin() {
@@ -123,10 +113,10 @@ export default {
           this.$store
             .dispatch("user/login", this.loginForm)
             .then(() => {
+              this.loading = false;
               this.$router.push({
                 path: this.redirect || "/",
               });
-              this.loading = false;
             })
             .catch(() => {
               this.loading = false;

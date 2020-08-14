@@ -1,13 +1,11 @@
 import axios from "axios";
-import { MessageBox, Message } from "element-ui";
+import { Message } from "element-ui";
 import store from "@/store";
 import { getToken } from "@/utils/auth";
 
-// create an axios instance
 const service = axios.create({
-  baseURL: process.env.VUE_APP_BASE_API, // url = base url + request url
-  // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000, // request timeout
+  baseURL: process.env.VUE_APP_BASE_API,
+  timeout: 5000,
 });
 
 // request interceptor
@@ -19,21 +17,24 @@ service.interceptors.request.use(
     return config;
   },
   (error) => {
-    // do something with request error
     console.log(error); // for debug
+    Message({
+      message: error.message,
+      type: "error",
+    });
     return Promise.reject(error);
   }
 );
 
 // response interceptor
 service.interceptors.response.use(
-  (response) => response,
+  ({ data }) => data,
   (error) => {
-    console.log("err" + error); // for debug
+    const { response } = error;
+    console.error(response.data.message);
     Message({
-      message: error.message,
+      message: response.data.message,
       type: "error",
-      duration: 5 * 1000,
     });
     return Promise.reject(error);
   }

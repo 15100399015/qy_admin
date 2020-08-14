@@ -1,19 +1,21 @@
 <template>
   <!-- 添加 -->
   <el-dialog
-    title="添加分类"
     v-el-drag-dialog
-    :lock-scroll="true"
-    :visible.sync="visible"
+    title="编辑分类"
     @close="onClose"
+    :visible.sync="visible"
+    :lock-scroll="true"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    width="650px"
   >
+    <!-- 表单 -->
     <el-form
       :model="typeParam"
       ref="typeFrom"
       :rules="rules"
-      label-width="80px"
+      label-width="70px"
       label-position="left"
       :hide-required-asterisk="true"
     >
@@ -27,9 +29,9 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="父级分类" prop="group_id">
+          <el-form-item label="父级分类" prop="type_pid">
             <el-select v-model="typeParam.type_pid" placeholder="请选父分类">
-              <el-option label="顶级分类" :value="''"></el-option>
+              <el-option label="顶级分类" :value="new String()"></el-option>
               <el-option
                 v-for="item in paramOptions.type_mid"
                 :key="item.value"
@@ -170,8 +172,9 @@ export default {
   props: ["visible"],
   created() {
     this.getType_1();
+    this.getGroup();
   },
-  destroyed: { elDragDialog },
+  directives: { elDragDialog },
   methods: {
     // 关闭
     onClose() {
@@ -248,6 +251,7 @@ export default {
   },
   data() {
     return {
+      // 上传请求头部
       uploadHeader: {
         token: getToken(),
       },
@@ -284,14 +288,14 @@ export default {
         },
         type_pid: {
           required: true,
-          type: "number",
+          type: "string",
           message: "检查父分类",
           trigger: "submit",
         },
         group_id: {
           required: true,
           type: "array",
-          defaultField: { type: "number" },
+          defaultField: { type: "string" },
           trigger: "submit",
         },
         type_logo: { type: "url", message: "这不是一个url", trigger: "submit" },

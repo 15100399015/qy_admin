@@ -37,10 +37,11 @@ const actions = {
   login({ commit }, userInfo) {
     const { username, password } = userInfo;
     return new Promise((resolve, reject) => {
-      login({ username: username.trim(), password: password })
-        .then((response) => {
-          const { data } = response;
+      login({ username: username, password: password })
+        .then((data) => {
+          // 仓库 token
           commit("SET_TOKEN", data.token);
+          // cookies token
           setToken(data.token);
           resolve();
         })
@@ -54,8 +55,7 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token)
-        .then((response) => {
-          const { data } = response;
+        .then((data) => {
           const { roles, name, avatar, introduction } = data;
           if (!roles) {
             reject("getInfo: roles must be a non-null array!");
@@ -101,28 +101,6 @@ const actions = {
       removeToken();
       resolve();
     });
-  },
-
-  // 动态修改权限
-  async changeRoles({ commit, dispatch }, role) {
-    const token = role + "-token";
-
-    commit("SET_TOKEN", token);
-    setToken(token);
-
-    const { roles } = await dispatch("getInfo");
-
-    resetRouter();
-
-    // generate accessible routes map based on roles
-    const accessRoutes = await dispatch("permission/generateRoutes", roles, {
-      root: true,
-    });
-    // dynamically add accessible routes
-    router.addRoutes(accessRoutes);
-
-    // reset visited views and cached views
-    dispatch("tagsView/delAllViews", null, { root: true });
   },
 };
 
