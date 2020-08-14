@@ -9,14 +9,14 @@ const articleRouter = {
   name: "Article",
   meta: {
     title: "文章",
-    icon: "eye-open",
+    icon: "article",
   },
   children: [
     {
       path: "data",
       component: () => import("@/views/article/dataDisplay"),
       name: "article",
-      meta: { title: "文章管理", icon: "eye-open" },
+      meta: { title: "文章管理" },
     },
   ],
 };

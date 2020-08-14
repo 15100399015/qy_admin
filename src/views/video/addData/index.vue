@@ -6,16 +6,16 @@
       title="创建影片"
       :visible.sync="dialogFormVisible"
       width="36%"
-      center
+      :lock-scroll="true"
       :close-on-click-modal="false"
       :close-on-press-escape="false"
     >
-      <div style="width:100%;height:600px;overflow-x: scroll;">
-        <!-- 视频信息 -->
-        <el-form ref="form" :model="videoParam" size="small">
-          <el-tabs v-model="activeName">
-            <!-- 影片基本信息 -->
-            <el-tab-pane label="影片信息" name="basic">
+      <!-- 视频信息 -->
+      <el-form ref="form" :model="videoParam" size="small">
+        <el-tabs v-model="activeName">
+          <!-- 影片基本信息 -->
+          <el-tab-pane label="影片信息" name="basic">
+            <div style="width:100%;height:500px;overflow-x: scroll;">
               <el-form-item label="分类">
                 <el-cascader
                   placeholder="分类"
@@ -274,8 +274,10 @@
                   <tinymce v-model="videoParam.video_content" />
                 </div>
               </el-form-item>
-            </el-tab-pane>
-            <el-tab-pane label="剧集" name="episodes">
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="剧集" name="episodes">
+            <div style="width:100%;height:500px;overflow-x: scroll;">
               <!-- 预览播放弹框 -->
               <el-dialog width="30%" title="视频预览" :visible.sync="innerVisible" append-to-body></el-dialog>
               <el-form-item>
@@ -322,8 +324,10 @@
                 </el-row>
               </el-form-item>
               <el-divider></el-divider>
-            </el-tab-pane>
-            <el-tab-pane label="其他信息" name="other">
+            </div>
+          </el-tab-pane>
+          <el-tab-pane label="其他信息" name="other">
+            <div style="width:100%;height:500px;overflow-x: scroll;">
               <el-row :gutter="10">
                 <el-col :span="6">
                   <el-form-item label="顶">
@@ -377,13 +381,13 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-            </el-tab-pane>
-          </el-tabs>
-          <el-form-item>
-            <el-button type="primary" @click="onSubmit">创建</el-button>
-            <el-button>还原</el-button>
-          </el-form-item>
-        </el-form>
+            </div>
+          </el-tab-pane>
+        </el-tabs>
+      </el-form>
+      <div slot="footer">
+        <el-button type="primary" @click="onSubmit">创建</el-button>
+        <el-button>还原</el-button>
       </div>
     </el-dialog>
   </div>

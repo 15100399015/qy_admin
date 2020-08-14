@@ -8,20 +8,20 @@ const userRouter = {
   name: "Basics",
   meta: {
     title: "基本设定",
-    icon: "eye-open",
+    icon: "basics",
   },
   children: [
     {
       path: "type",
       component: () => import("@/views/basics/type"),
       name: "type",
-      meta: { title: "分类管理", icon: "eye-open" },
+      meta: { title: "分类管理" },
     },
     {
       path: "topic",
       component: () => import("@/views/basics/topic"),
       name: "topic",
-      meta: { title: "专题管理", icon: "eye-open" },
+      meta: { title: "专题管理" },
     },
   ],
 };

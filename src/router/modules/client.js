@@ -8,20 +8,14 @@ const userRouter = {
   name: "Client",
   meta: {
     title: "客户端参数",
-    icon: "eye-open",
+    icon: "client",
   },
   children: [
     {
       path: "ads",
       component: () => import("@/views/client/ads"),
       name: "ads",
-      meta: { title: "广告管理", icon: "eye-open" },
-    },
-    {
-      path: "ads",
-      component: () => import("@/views/client/ads"),
-      name: "ads",
-      meta: { title: "广告管理", icon: "eye-open" },
+      meta: { title: "广告管理" },
     },
   ],
 };

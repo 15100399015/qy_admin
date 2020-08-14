@@ -9,15 +9,9 @@ const tableRouter = {
   name: "System",
   meta: {
     title: "系统",
-    icon: "table",
+    icon: "system",
   },
   children: [
-    {
-      path: "user-param",
-      component: () => import("@/views/system/userParam"),
-      name: "UserParam",
-      meta: { title: "会员参数" },
-    },
     {
       path: "user-param",
       component: () => import("@/views/system/userParam"),

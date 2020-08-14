@@ -1,32 +1,35 @@
 <template>
   <div class="app-container">
+    <!-- 操作按钮 -->
     <div class="filter-container">
-      <el-button icon="el-icon-plus" @click="handleFilter">添加</el-button>
-      <el-button icon="el-icon-edit" @click="handleCreate">修改</el-button>
-      <el-button icon="el-icon-delete" @click="handleDownload">删除</el-button>
-      <el-button icon="el-icon-top-right" @click="handleDownload">转移</el-button>
+      <el-button icon="el-icon-plus" @click="handleCreate">添加</el-button>
+      <el-button icon="el-icon-delete" @click="handleDelete">删除</el-button>
+      <el-button icon="el-icon-top-right" @click="handleShift">转移</el-button>
     </div>
 
-    <el-table
-      :key="tableKey"
-      v-loading="listLoading"
-      :data="list"
-      border
-      fit
-      highlight-current-row
-      style="width: 100%;"
-      @sort-change="sortChange"
-    >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center">id</el-table-column>
-      <el-table-column label="名称" width="150px" align="center">名称</el-table-column>
-      <el-table-column label="状态" min-width="150px">
-        <el-switch></el-switch>
+    <el-table :key="tableKey" :data="list" border fit highlight-current-row style="width: 100%;">
+      <el-table-column type="selection" width="55" align="center"></el-table-column>
+      <el-table-column label="名称" align="center" prop="type_name"></el-table-column>
+      <el-table-column label="状态" prop="type_status">
+        <template slot-scope="scope">
+          <el-switch v-model="scope.row.type_status" @change="changeStatus(scope.row._id)"></el-switch>
+        </template>
       </el-table-column>
-      <el-table-column label="类型" width="110px" align="center">类型</el-table-column>
-      <el-table-column label="名称" width="80px">名称</el-table-column>
-      <el-table-column label="英文名" align="center" width="95">英文名</el-table-column>
-      <el-table-column label="操作" class-name="status-col" align="center">
-        <el-button>编辑</el-button>
+      <el-table-column label="类型" align="center" prop="type_mid">
+        <template slot-scope="scope">{{ midT(scope.row.type_mid) }}</template>
+      </el-table-column>
+      <el-table-column label="操作">
+        <template slot-scope="scope">
+          <el-button @click="handleEditOne(scope.row._id)" size="small" type="primary" plain>编辑</el-button>
+          <el-button @click="handleDeleteOne(scope.row._id)" size="small" type="danger" plain>删除</el-button>
+          <el-button
+            @click="handleAddChild(scope.row)"
+            v-if="scope.row.type_pid"
+            size="small"
+            type="success"
+            plain
+          >添加</el-button>
+        </template>
       </el-table-column>
     </el-table>
     <!-- 分页 -->
@@ -37,75 +40,22 @@
       :limit.sync="listQuery.limit"
       @pagination="getList"
     />
-    <!-- 添加弹框 -->
-    <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form
-        ref="dataForm"
-        :rules="rules"
-        :model="temp"
-        label-position="left"
-        label-width="70px"
-        style="width: 400px; margin-left:50px;"
-      >
-        <el-form-item label="Type" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option
-              v-for="item in calendarTypeOptions"
-              :key="item.key"
-              :label="item.display_name"
-              :value="item.key"
-            />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker
-            v-model="temp.timestamp"
-            type="datetime"
-            placeholder="Please pick a date"
-          />
-        </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
-        </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate
-            v-model="temp.importance"
-            :colors="['#99A9BF', '#F7BA2A', '#FF9900']"
-            :max="10"
-            style="margin-top:8px;"
-          />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input
-            v-model="temp.remark"
-            :autosize="{ minRows: 2, maxRows: 4}"
-            type="textarea"
-            placeholder="Please input"
-          />
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">Cancel</el-button>
-        <el-button type="primary" @click="dialogStatus==='create'?createData():updateData()">Confirm</el-button>
-      </div>
-    </el-dialog>
+    <add-type :visible.sync="dialogFormVisible" @on-success="addSuccess" @on-error="addError" />
   </div>
 </template>
 
 <script>
-import {} from "@/api/type";
+import { fetchTypeList, deleteType } from "@/api/type";
 import Pagination from "@/components/Pagination";
-
+import AddType from "./components/addType";
 export default {
   name: "ComplexTable",
-  components: { Pagination },
+  components: { Pagination, AddType },
   data() {
     return {
+      // 是否显示添加弹窗
+      dialogFormVisible: false,
+      // key
       tableKey: 0,
       // 列表
       list: null,
@@ -130,20 +80,54 @@ export default {
   },
   // 方法
   methods: {
-    getList() {},
-    handleFilter() {},
+    handleAddChild(row) {
+      console.log(row);
+    },
+    // 改变状态
+    changeStatus(_id, s) {
+      console.log(_id, s);
+    },
+    // 添加数据成功
+    addSuccess() {
+      this.getList();
+    },
+    // 添加数据失败
+    addError() {},
+    // 单个编辑
+    handleEditOne(_id) {},
+    // 单个删除
+    handleDeleteOne(_id) {
+      deleteType(_id).then(() => {
+        this.$message({
+          message: "操作成功",
+          type: "success",
+        });
+        this.getList();
+      });
+    },
+    midT(id) {
+      switch (id) {
+        case 1:
+          return "视频";
+        case 2:
+          return "文章";
+        default:
+          return id;
+      }
+    },
+    // 获取分类列表
+    getList() {
+      fetchTypeList().then((res) => {
+        this.list = res.data.data;
+      });
+    },
     handleModifyStatus(row, status) {},
-    sortChange(data) {},
-    sortByID(order) {},
-    resetTemp() {},
-    handleCreate() {},
-    createData() {},
-    handleUpdate(row) {},
-    updateData() {},
-    handleDelete(row, index) {},
-    handleFetchPv(pv) {},
-    formatJson(filterVal) {},
-    getSortClass(key) {},
+
+    handleCreate() {
+      this.dialogFormVisible = true;
+    },
+    handleDelete() {},
+    handleShift() {},
   },
 };
 </script>

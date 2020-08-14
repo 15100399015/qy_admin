@@ -9,14 +9,20 @@ const userRouter = {
   name: "User",
   meta: {
     title: "用户管理",
-    icon: "eye-open",
+    icon: "user",
   },
   children: [
     {
       path: "data",
       component: () => import("@/views/user/dataDisplay"),
       name: "user",
-      meta: { title: "用户管理", icon: "eye-open" },
+      meta: { title: "用户管理" },
+    },
+    {
+      path: "group",
+      component: () => import("@/views/user/group"),
+      name: "group",
+      meta: { title: "权限组" },
     },
   ],
 };

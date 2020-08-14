@@ -10,10 +10,10 @@ import Layout from "@/layout";
 import videoRouter from "./modules/video";
 import userRouter from "./modules/user";
 import articleRouter from "./modules/article";
-import tableRouter from "./modules/table";
 import basicsRouter from "./modules/basics";
 import clientRouter from "./modules/client";
 import systemRouter from "./modules/system";
+import collectionRouter from "./modules/collection";
 
 /**
  * Note: 子菜单仅在子路由长度>=1的时出现.
@@ -68,6 +68,21 @@ export const constantRoutes = [
     component: () => import("@/views/error-page/401"),
     hidden: true,
   },
+  // 个人页
+  {
+    path: "/profile",
+    component: Layout,
+    redirect: "/profile/index",
+    hidden: true,
+    children: [
+      {
+        path: "index",
+        component: () => import("@/views/profile/index"),
+        name: "Profile",
+        meta: { title: "Profile" },
+      },
+    ],
+  },
   // 跟路由=>仪表盘
   {
     path: "/",
@@ -82,28 +97,13 @@ export const constantRoutes = [
       },
     ],
   },
-  // 个人页
-  {
-    path: "/profile",
-    component: Layout,
-    redirect: "/profile/index",
-    hidden: true,
-    children: [
-      {
-        path: "index",
-        component: () => import("@/views/profile/index"),
-        name: "Profile",
-        meta: { title: "Profile", icon: "user" },
-      },
-    ],
-  },
-  videoRouter,
-  userRouter,
-  articleRouter,
-  tableRouter,
+  systemRouter,
   basicsRouter,
   clientRouter,
-  systemRouter,
+  videoRouter,
+  articleRouter,
+  userRouter,
+  collectionRouter,
 ];
 
 /**
