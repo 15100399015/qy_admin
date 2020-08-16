@@ -3,11 +3,12 @@
   <el-dialog
     v-el-drag-dialog
     title="编辑分类"
-    @close="onClose"
     :visible.sync="visible"
     :lock-scroll="true"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
+    @close="onClose"
+    @open="onOpen"
     width="650px"
   >
     <!-- 表单 -->
@@ -31,9 +32,9 @@
         <el-col :span="12">
           <el-form-item label="父级分类" prop="type_pid">
             <el-select v-model="typeParam.type_pid" placeholder="请选父分类">
-              <el-option label="顶级分类" :value="new String()"></el-option>
+              <el-option key="emptyStr" label="顶级分类" :value="emptyStr"></el-option>
               <el-option
-                v-for="item in paramOptions.type_mid"
+                v-for="item in paramOptions.type_pid"
                 :key="item.value"
                 :label="item.label"
                 :value="item._id"
@@ -163,19 +164,32 @@
 </template>
 
 <script>
-import { createType, fetchTypeList } from "@/api/type";
-import { fetchGroupList } from "@/api/group";
+import {
+  createType,
+  fetchTypeList,
+  fetchTypeOne,
+  updateType,
+} from "@/api/type";
+import { fetchAllGroup } from "@/api/group";
 import elDragDialog from "@/directive/el-drag-dialog"; // base on element-ui
 import { getToken } from "@/utils/auth";
 import { MessageBox, Message } from "element-ui";
 export default {
-  props: ["visible"],
-  created() {
-    this.getType_1();
-    this.getGroup();
-  },
+  props: ["visible", "model", "fillId"],
   directives: { elDragDialog },
+  watch: {
+    "typeParam.type_mid": function (newVal) {
+      this.getType_1();
+    },
+  },
   methods: {
+    onOpen() {
+      if (this.model === "upDate") {
+        this.getFillInfo();
+      }
+      this.getType_1();
+      this.getGroup();
+    },
     // 关闭
     onClose() {
       this.$emit("update:visible", false);
@@ -185,22 +199,30 @@ export default {
     getType_1() {
       fetchTypeList({
         where: {
-          type_pid: 0,
+          type_pid: "",
+          type_mid: this.typeParam.type_mid,
         },
         limit: 100,
       }).then(({ data }) => {
-        this.paramOptions.type_mid = data.data.map((item) => ({
-          label: item.type_name,
-          _id: item._id,
-        }));
+        this.paramOptions.type_pid = data.map((item) => {
+          return {
+            label: item.type_name,
+            _id: item._id,
+          };
+        });
+      });
+    },
+    getFillInfo() {
+      fetchTypeOne(this.fillId).then((data) => {
+        Object.keys(this.typeParam).forEach((item) => {
+          this.typeParam[item] = data[item];
+        });
       });
     },
     // 获取用户组
     getGroup() {
-      fetchGroupList({
-        limit: 100,
-      }).then(({ data }) => {
-        this.paramOptions.group = data.data.map((item) => ({
+      fetchAllGroup().then((data) => {
+        this.paramOptions.group = data.map((item) => ({
           label: item.group_name,
           _id: item._id,
         }));
@@ -208,26 +230,58 @@ export default {
     },
     // 提交
     handleSubmit() {
-      this.$refs["typeFrom"].validate((valid) => {
+      this.$refs["typeFrom"].validate(async (valid) => {
         if (valid) {
-          createType(this.typeParam).then((res) => {
-            this.$message({
-              message: "创建成功",
-              type: "success",
-            });
-            // 关闭弹窗
-            this.visible = false;
-            // 重置表单
+          let state;
+          if (this.model === "create") {
+            state = await this.handleCreate();
+          }
+          if (this.model === "upDate") {
+            state = await this.handleUpDate();
+          }
+          if (state !== false) {
             this.$refs["typeFrom"].resetFields();
-            // 触发事件
-            this.$emit("on-success");
-          });
+            this.$emit("on-success", state);
+            this.onClose();
+          } else {
+            this.$emit("on-error");
+          }
         } else {
           console.log("error submit!!");
           return false;
         }
       });
     },
+
+    // 新建
+    handleCreate() {
+      return createType(this.typeParam)
+        .then((res) => {
+          this.$message({
+            message: "创建成功",
+            type: "success",
+          });
+          return res;
+        })
+        .catch((err) => {
+          return false;
+        });
+    },
+    // 更新
+    handleUpDate() {
+      return updateType(this.fillId, this.typeParam)
+        .then((res) => {
+          this.$message({
+            message: "修改成功",
+            type: "success",
+          });
+          return res;
+        })
+        .catch((err) => {
+          return false;
+        });
+    },
+
     upLogoSucess(response, file, fileList) {
       this.logoLoading = false;
       this.typeParam.type_logo = response.url;
@@ -251,11 +305,15 @@ export default {
   },
   data() {
     return {
+      // 空字符串占位符
+      emptyStr: "",
       // 上传请求头部
       uploadHeader: {
         token: getToken(),
       },
+      // logo 上传加载
       logoLoading: false,
+      // 图片上传加载
       picLoading: false,
       typeParam: {
         group_id: [],
@@ -270,7 +328,7 @@ export default {
         type_extend: "",
       },
       paramOptions: {
-        type_mid: [],
+        type_pid: [],
         group: [],
       },
       rules: {
@@ -287,7 +345,6 @@ export default {
           trigger: "submit",
         },
         type_pid: {
-          required: true,
           type: "string",
           message: "检查父分类",
           trigger: "submit",

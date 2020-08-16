@@ -10,7 +10,14 @@ export function fetchTypeList(rule) {
   });
 }
 
-export function fetchType(id) {
+export function fetchAllType() {
+  return request({
+    url: "/type/findAll",
+    method: "get",
+  });
+}
+
+export function fetchTypeOne(id) {
   return request({
     url: "/type/findOne",
     method: "get",
@@ -38,5 +45,16 @@ export function deleteType(id) {
   return request({
     url: "/type/delete/" + id,
     method: "delete",
+  });
+}
+
+// 删除一条数据
+export function deleteManyType(_idArr) {
+  return request({
+    url: "/type/deleteMany",
+    method: "delete",
+    data: {
+      conditions: { _id: { $in: _idArr } },
+    },
   });
 }

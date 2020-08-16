@@ -6,32 +6,42 @@
       <el-button icon="el-icon-delete" @click="handleDelete">删除</el-button>
       <el-button icon="el-icon-top-right" @click="handleShift">转移</el-button>
     </div>
-
     <!-- 数据列表 -->
-    <el-table :key="tableKey" :data="list" border lazy :load="load" row-key="id">
+    <el-table
+      :data="list"
+      :show-overflow-tooltip="true"
+      :tree-props="{children: 'children', hasChildren: 'hasChildren'}"
+      border
+      row-key="_id"
+      @selection-change="handleSelectionChange"
+      default-expand-all
+    >
       <el-table-column type="selection" width="55" align="center"></el-table-column>
-      <el-table-column label="名称" width="185" align="center" prop="type_name"></el-table-column>
-      <el-table-column label="排序" width="60" align="center" prop="type_sort"></el-table-column>
+      <el-table-column label="名称" width="315" align="left" prop="type_name"></el-table-column>
+      <el-table-column label="排序" width="100" align="center" prop="type_sort"></el-table-column>
+      <el-table-column label="类型" width="100" align="center" prop="type_mid">
+        <template slot-scope="{row}">{{ midT(row.type_mid) }}</template>
+      </el-table-column>
       <el-table-column label="状态">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.type_status" @change="changeStatus(scope.row._id)"></el-switch>
+          <el-switch
+            v-model="scope.row.type_status"
+            @change="changeStatus(scope.row._id,scope.row.type_status,scope.$index)"
+          ></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="权限" prop="type_status">
-        <template slot-scope="scope">
-          <el-tag v-for="tag in scope.row.group_id" :key="tag" type="success">{{tag}}</el-tag>
+        <template slot-scope="{row}">
+          <el-tag v-for="tag in row.group_id" :key="tag" type="success">{{groupT(tag)}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="类型" align="center" prop="type_mid">
-        <template slot-scope="scope">{{ midT(scope.row.type_mid) }}</template>
-      </el-table-column>
       <el-table-column label="操作" width="280">
-        <template slot-scope="scope">
-          <el-button @click="handleEditOne(scope.row._id)" size="small" type="primary" plain>编辑</el-button>
-          <el-button @click="handleDeleteOne(scope.row._id)" size="small" type="danger" plain>删除</el-button>
+        <template slot-scope="{row}">
+          <el-button @click="handleEditOne(row._id)" size="small" type="primary" plain>编辑</el-button>
+          <el-button @click="handleDeleteOne(row._id)" size="small" type="danger" plain>删除</el-button>
           <el-button
-            @click="handleAddChild(scope.row)"
-            v-if="scope.row.type_pid"
+            @click="handleAddChild(row)"
+            v-if="!row.type_pid"
             size="small"
             type="success"
             plain
@@ -39,79 +49,86 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 -->
-    <pagination
-      v-show="total>0"
-      :total="total"
-      :page.sync="listQuery.page"
-      :limit.sync="listQuery.limit"
-      @pagination="getList"
-    />
     <!-- 添加/修改弹窗 -->
-    <add-type :visible.sync="dialogFormVisible" @on-success="addSuccess" @on-error="addError" />
+    <edit-type
+      :visible.sync="dialogFormVisible"
+      :model="dialogModel"
+      :fillId="dialogfillId"
+      @on-success="editSuccess"
+      @on-error="editError"
+    />
   </div>
 </template>
 
 <script>
-import { fetchTypeList, deleteType } from "@/api/type";
+import {
+  fetchAllType,
+  deleteType,
+  deleteManyType,
+  updateType,
+} from "@/api/type";
+import { fetchAllGroup } from "@/api/group";
 import Pagination from "@/components/Pagination";
-import AddType from "./components/addType";
+import EditType from "./components/editType";
 export default {
   name: "Type",
-  components: { Pagination, AddType },
+  components: { Pagination, EditType },
   data() {
     return {
-      // 是否显示弹窗
+      multipleSelection: [],
+
+      dialogModel: false,
+      dialogfillId: "",
       dialogFormVisible: false,
-      // key
-      tableKey: 0,
-      // 列表
-      list: null,
-      // 总数
-      total: 0,
-      // 加载中
+
+      list: [],
       listLoading: true,
-      // 请求参数
-      listQuery: {
-        page: 1,
-        limit: 20,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: "+id",
-      },
+      groupList: {},
     };
   },
   created() {
     this.getList();
+    this.getGroupList();
   },
   // 方法
   methods: {
-    // 加载表格子分类
-    load(tree, treeNode, resolve) {
-      console.log(treeNode);
-      // fetchTypeList().then((res) => {
-      //   this.list = res.data.data;
-      // });
-      resolve();
+    midT(id) {
+      if (id === 1) return "视频";
+      if (id === 2) return "文章";
+      return id;
     },
-    // 添加子分类
-    handleAddChild() {},
-    // 改变状态
-    changeStatus() {},
+    groupT(id) {
+      return this.groupList[id];
+    },
+    // 多选改变
+    handleSelectionChange(val) {
+      this.multipleSelection = val.map((item) => item._id);
+    },
     // 添加数据成功
-    addSuccess() {
+    editSuccess(val) {
       this.getList();
     },
     // 添加数据失败
-    addError() {
-      this.$message({
-        message: "操作失败",
-        type: "error",
+    editError(error) {},
+    // 改变状态
+    changeStatus(_id, status, index) {
+      updateType(_id, {
+        type_status: status,
+      }).then(() => {
+        this.$message.success({
+          message: "更新成功",
+        });
+        this.getList();
       });
     },
+    // 添加子分类
+    handleAddChild(_id) {},
     // 单个编辑
-    handleEditOne(_id) {},
+    handleEditOne(_id) {
+      this.dialogModel = "upDate";
+      this.dialogfillId = _id;
+      this.dialogFormVisible = true;
+    },
     // 单个删除
     handleDeleteOne(_id) {
       deleteType(_id).then(() => {
@@ -122,29 +139,65 @@ export default {
         this.getList();
       });
     },
-    midT(id) {
-      if (id === 1) return "视频";
-      if (id === 2) return "文章";
-      return id;
-    },
-    // 获取分类列表
-    getList() {
-      fetchTypeList().then((data) => {
-        let _data = data.data;
-        this.list = _data.map((item) => {
-          // 如果为空说明是顶级分类
-          if (item.type_pid === "") {
-            item.hasChildren = true;
-          }
-          return item;
-        });
-      });
-    },
+    // 点击添加
     handleCreate() {
+      this.dialogModel = "create";
+      this.dialogfillId = "";
       this.dialogFormVisible = true;
     },
-    handleDelete() {},
+    // 点击删除
+    handleDelete() {
+      if (this.multipleSelection.length === 0) {
+        this.$message.warning({
+          message: "未选择任何数据",
+        });
+        return;
+      }
+      deleteManyType(this.multipleSelection).then(() => {
+        this.$message.success({
+          message: "操作成功",
+        });
+        this.getList();
+      });
+    },
+    // 点击转移
     handleShift() {},
+    // 获取分类列表
+    getList() {
+      fetchAllType().then((data) => {
+        let type_id_1 = [];
+        let type_id_2 = [];
+
+        for (let j = 0, len = data.length; j < len; j++) {
+          let item = data[j];
+          if (item.type_pid === "") {
+            item.children = [];
+            type_id_1.push(item);
+          } else {
+            type_id_2.push(item);
+          }
+        }
+        for (let j = 0, len = type_id_2.length; j < len; j++) {
+          let type_2 = type_id_2[j];
+          for (let _j = 0, _len = type_id_1.length; _j < _len; _j++) {
+            let type_1 = type_id_1[_j];
+            if (type_2.type_pid === type_1._id) {
+              type_1.children.push(type_2);
+            }
+          }
+        }
+        this.list = type_id_1;
+      });
+    },
+    getGroupList() {
+      return fetchAllGroup().then((data) => {
+        let groupList = {};
+        data.forEach((item) => {
+          groupList[item._id] = item.group_name;
+        });
+        this.groupList = groupList;
+      });
+    },
   },
 };
 </script>

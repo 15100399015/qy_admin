@@ -1,7 +1,8 @@
 import axios from "axios";
-import { Message } from "element-ui";
+import { Message, Notification } from "element-ui";
 import store from "@/store";
 import { getToken } from "@/utils/auth";
+import { syntaxHighlight } from "@/utils/syntaxHighlight";
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
@@ -32,9 +33,13 @@ service.interceptors.response.use(
   (error) => {
     const { response } = error;
     console.error(response.data.message);
-    Message({
-      message: response.data.message,
-      type: "error",
+    Notification.error({
+      title: "错误",
+      dangerouslyUseHTMLString: true,
+      message: syntaxHighlight(response.data, {
+        height: "180px",
+        indent: 1,
+      }),
     });
     return Promise.reject(error);
   }

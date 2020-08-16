@@ -5,13 +5,15 @@ import Layout from "@/layout";
 const userRouter = {
   path: "/collection",
   component: Layout,
-  redirect: "noRedirect",
-  name: "Collection",
-  component: () => import("@/views/collection"),
-  meta: {
-    title: "采集",
-    icon: "collection",
-  },
+  redirect: "/collection/index",
+  children: [
+    {
+      path: "index",
+      component: () => import("@/views/collection"),
+      name: "Collection",
+      meta: { title: "采集", icon: "client" },
+    },
+  ],
 };
 
 export default userRouter;
