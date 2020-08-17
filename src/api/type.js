@@ -17,11 +17,17 @@ export function fetchAllType() {
   });
 }
 
-export function fetchTypeOne(id) {
+export function fetchTypeOne(_id) {
   return request({
-    url: "/type/findOne",
+    url: "/type/findOne/",
     method: "get",
-    params: { id },
+    params: {
+      query: JSON.stringify({
+        where: {
+          _id,
+        },
+      }),
+    },
   });
 }
 
@@ -38,6 +44,17 @@ export function updateType(id, data) {
     url: "/type/update/" + id,
     method: "put",
     data,
+  });
+}
+
+export function updateManyType(conditions, doc) {
+  return request({
+    url: "/type/update",
+    method: "put",
+    data: {
+      conditions,
+      doc,
+    },
   });
 }
 // 删除一条数据

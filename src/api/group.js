@@ -10,11 +10,17 @@ export function fetchGroupList(rule) {
   });
 }
 // 根据id获取一条数据
-export function fetchOneGroup(id) {
+export function fetchOneGroup(_id) {
   return request({
     url: "/group/findOne",
     method: "get",
-    params: { id },
+    params: {
+      query: JSON.stringify({
+        where: {
+          _id,
+        },
+      }),
+    },
   });
 }
 // 获取所有数据

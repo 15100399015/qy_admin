@@ -9,15 +9,14 @@
     :close-on-press-escape="false"
     @close="onClose"
     @open="onOpen"
-    width="650px"
   >
     <!-- 表单 -->
     <el-form
-      :model="typeParam"
-      ref="typeFrom"
-      :rules="rules"
       label-width="70px"
       label-position="left"
+      :model="typeParam"
+      :rules="rules"
+      ref="typeFrom"
       :hide-required-asterisk="true"
     >
       <el-row :gutter="10">
@@ -171,21 +170,24 @@ import {
   updateType,
 } from "@/api/type";
 import { fetchAllGroup } from "@/api/group";
-import elDragDialog from "@/directive/el-drag-dialog"; // base on element-ui
+import elDragDialog from "@/directive/el-drag-dialog";
 import { getToken } from "@/utils/auth";
-import { MessageBox, Message } from "element-ui";
 export default {
-  props: ["visible", "model", "fillId"],
+  props: ["visible", "model", "fillId", "type1Id"],
   directives: { elDragDialog },
   watch: {
-    "typeParam.type_mid": function (newVal) {
+    "typeParam.type_mid": function () {
       this.getType_1();
     },
   },
   methods: {
     onOpen() {
+      if (this.model === "create") {
+      }
       if (this.model === "upDate") {
         this.getFillInfo();
+      }
+      if (this.model === "addChildren") {
       }
       this.getType_1();
       this.getGroup();
@@ -202,14 +204,15 @@ export default {
           type_pid: "",
           type_mid: this.typeParam.type_mid,
         },
-        limit: 100,
+        limit: null,
       }).then(({ data }) => {
-        this.paramOptions.type_pid = data.map((item) => {
-          return {
-            label: item.type_name,
-            _id: item._id,
-          };
-        });
+        this.paramOptions.type_pid = data.map((item) => ({
+          label: item.type_name,
+          _id: item._id,
+        }));
+        if (this.model === "addChildren") {
+          this.typeParam.type_pid = this.type1Id;
+        }
       });
     },
     getFillInfo() {
@@ -236,6 +239,9 @@ export default {
           if (this.model === "create") {
             state = await this.handleCreate();
           }
+          if (this.model === "addChildren") {
+            state = await this.handleCreate();
+          }
           if (this.model === "upDate") {
             state = await this.handleUpDate();
           }
@@ -252,7 +258,6 @@ export default {
         }
       });
     },
-
     // 新建
     handleCreate() {
       return createType(this.typeParam)
