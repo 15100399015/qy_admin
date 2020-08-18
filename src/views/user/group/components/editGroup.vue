@@ -1,16 +1,14 @@
 <template>
-  <!-- 添加 -->
   <el-dialog
     v-el-drag-dialog
     title="编辑权限"
-    :visible.sync="visible"
+    :visible.sync="_visible"
     :lock-scroll="true"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     @close="onClose"
     @open="onOpen"
   >
-    <!-- 表单 -->
     <el-form
       ref="groupFrom"
       label-width="80px"
@@ -69,11 +67,20 @@
             <el-input-number :min="0" v-model="groupParam.group_points_free"></el-input-number>
           </el-form-item>
         </el-col>
+        <el-col :span="12">
+          <el-form-item label="颜色" prop="group_color">
+            <el-color-picker
+              show-alpha
+              v-model="groupParam.group_color"
+              :predefine="paramOption.predefineColors"
+            ></el-color-picker>
+          </el-form-item>
+        </el-col>
       </el-row>
     </el-form>
     <div slot="footer">
       <el-button @click="handleSubmit" type="primary">确 定</el-button>
-      <el-button @click="onClose">取 消</el-button>
+      <el-button @click="handleClose">取 消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -84,19 +91,28 @@ import elDragDialog from "@/directive/el-drag-dialog";
 export default {
   props: ["visible", "model", "fillId"],
   directives: { elDragDialog },
+  computed: {
+    _visible: {
+      get() {
+        return this.visible;
+      },
+      set(val) {
+        this.$emit("update:visible", val);
+      },
+    },
+  },
   methods: {
-    // 打开
     onOpen() {
       if (this.model === "upDate") {
         this.getFillInfo();
       }
     },
-    // 关闭
+    handleClose() {
+      this._visible = false;
+    },
     onClose() {
-      this.$emit("update:visible", false);
       this.$refs["groupFrom"].resetFields();
     },
-    // 获取填充数据
     getFillInfo() {
       fetchOneGroup(this.fillId).then((data) => {
         Object.keys(this.groupParam).forEach((item) => {
@@ -104,7 +120,6 @@ export default {
         });
       });
     },
-    // 提交
     handleSubmit() {
       this.$refs["groupFrom"].validate(async (valid) => {
         if (valid) {
@@ -128,7 +143,6 @@ export default {
         }
       });
     },
-    // 新建
     handleCreate() {
       return createGroup(this.groupParam)
         .then((res) => {
@@ -142,7 +156,6 @@ export default {
           return false;
         });
     },
-    // 更新
     handleUpDate() {
       return updateGroup(this.fillId, this.groupParam)
         .then((res) => {
@@ -176,6 +189,25 @@ export default {
         group_points_year: 0,
         group_points_free: 0,
         group_remarks: "",
+        group_color: "",
+      },
+      paramOption: {
+        predefineColors: [
+          "#ff4500",
+          "#ff8c00",
+          "#ffd700",
+          "#90ee90",
+          "#00ced1",
+          "#1e90ff",
+          "#c71585",
+          "rgba(255, 69, 0, 0.68)",
+          "rgb(255, 120, 0)",
+          "hsv(51, 100, 98)",
+          "hsva(120, 40, 94, 0.5)",
+          "hsl(181, 100%, 37%)",
+          "hsla(209, 100%, 56%, 0.73)",
+          "#c7158577",
+        ],
       },
       rules: {
         group_name: {

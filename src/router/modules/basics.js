@@ -12,16 +12,34 @@ const userRouter = {
   },
   children: [
     {
-      path: "type",
-      component: () => import("@/views/basics/type"),
-      name: "type",
+      path: "govern-type",
+      component: () => import("@/views/basics/governType"),
+      name: "governType",
       meta: { title: "分类管理" },
     },
     {
-      path: "topic",
-      component: () => import("@/views/basics/topic"),
-      name: "topic",
+      path: "govern-topic",
+      component: () => import("@/views/basics/governTopic"),
+      name: "governTopic",
       meta: { title: "专题管理" },
+    },
+    {
+      path: "govern-gbook",
+      component: () => import("@/views/basics/governGbook"),
+      name: "governGbook",
+      meta: { title: "留言管理" },
+    },
+    {
+      path: "govern-comment",
+      component: () => import("@/views/basics/governComment"),
+      name: "governComment",
+      meta: { title: "评论管理" },
+    },
+    {
+      path: "govern-link",
+      component: () => import("@/views/basics/governLink"),
+      name: "governLink",
+      meta: { title: "友链管理" },
     },
   ],
 };

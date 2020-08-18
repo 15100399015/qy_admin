@@ -3,7 +3,7 @@
   <el-dialog
     v-el-drag-dialog
     title="编辑分类"
-    :visible.sync="visible"
+    :visible.sync="_visible"
     :lock-scroll="true"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
@@ -156,8 +156,8 @@
       </el-form-item>
     </el-form>
     <div slot="footer">
-      <el-button type="primary" @click="handleSubmit">确 定</el-button>
-      <el-button @click="visible = false">取 消</el-button>
+      <el-button @click="handleSubmit" type="primary">确 定</el-button>
+      <el-button @click="handleClose">取 消</el-button>
     </div>
   </el-dialog>
 </template>
@@ -175,12 +175,25 @@ import { getToken } from "@/utils/auth";
 export default {
   props: ["visible", "model", "fillId", "type1Id"],
   directives: { elDragDialog },
+  computed: {
+    _visible: {
+      get() {
+        return this.visible;
+      },
+      set(val) {
+        this.$emit("update:visible", val);
+      },
+    },
+  },
   watch: {
     "typeParam.type_mid": function () {
       this.getType_1();
     },
   },
   methods: {
+    handleClose() {
+      this._visible = false;
+    },
     onOpen() {
       if (this.model === "create") {
       }

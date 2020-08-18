@@ -1,11 +1,9 @@
 <template>
   <div class="app-container">
-    <!-- 操作按钮 -->
     <div class="filter-container">
       <el-button icon="el-icon-plus" @click="handleCreate">添加</el-button>
       <el-button icon="el-icon-delete" @click="handleDelete">删除</el-button>
     </div>
-    <!-- 数据列表 -->
     <el-table
       border
       row-key="_id"

@@ -22,7 +22,7 @@ const tableRouter = {
       path: "config-comment",
       component: () => import("@/views/system/configComment"),
       name: "configComment",
-      meta: { title: "评论采集配置" },
+      meta: { title: "评论留言配置" },
     },
     {
       path: "config-collect",
@@ -47,8 +47,7 @@ const tableRouter = {
       component: () => import("@/views/system/configUpload"),
       name: "configUpload",
       meta: { title: "附件参数配置" },
-      
-    }
+    },
   ],
 };
 export default tableRouter;

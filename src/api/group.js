@@ -56,13 +56,3 @@ export function deleteGroup(id) {
     method: "delete",
   });
 }
-// 删除多条数据
-export function deleteManyGroup(_idArr) {
-  return request({
-    url: "/group/deleteMany",
-    method: "delete",
-    data: {
-      conditions: { _id: { $in: _idArr } },
-    },
-  });
-}

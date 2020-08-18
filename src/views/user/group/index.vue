@@ -1,22 +1,22 @@
 <template>
   <div class="app-container">
-    <!-- 操作按钮 -->
     <div class="filter-container">
       <el-button icon="el-icon-plus" @click="handleCreate">添加</el-button>
-      <el-button icon="el-icon-delete" @click="handleDelete">删除</el-button>
     </div>
-    <!-- 数据列表 -->
     <el-table
       :data="list"
       border
       ref="groupTable"
       v-loading="listLoading"
       :show-overflow-tooltip="true"
-      @selection-change="handleSelectionChange"
     >
-      <el-table-column type="selection" width="55" align="center" :resizable="false"></el-table-column>
-      <el-table-column label="索引" type="index" width="55" align="center" :resizable="false"></el-table-column>
-      <el-table-column label="名称" prop="group_name" width="185" :resizable="false"></el-table-column>
+      <el-table-column label="索引" width="110" type="index" align="center" :resizable="false"></el-table-column>
+      <el-table-column label="名称" width="185" prop="group_name" :resizable="false">
+        <template slot-scope="{row}">
+          {{row.group_name}}
+          <span :style="`color:${row.group_color}`">emmm</span>
+        </template>
+      </el-table-column>
       <el-table-column label="状态" prop="group_status" align="center" :resizable="false">
         <template slot-scope="scope">
           <el-switch
@@ -25,11 +25,46 @@
           ></el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="天积分" prop="group_points_day" align="center" :resizable="false"></el-table-column>
-      <el-table-column label="周积分" prop="group_points_week" align="center" :resizable="false"></el-table-column>
-      <el-table-column label="月积分" prop="group_points_month" align="center" :resizable="false"></el-table-column>
-      <el-table-column label="年积分" prop="group_points_year" align="center" :resizable="false"></el-table-column>
-      <el-table-column label="永久积分" prop="group_points_free" align="center" :resizable="false"></el-table-column>
+      <el-table-column
+        label="天积分"
+        width="110"
+        sortable
+        prop="group_points_day"
+        align="center"
+        :resizable="false"
+      ></el-table-column>
+      <el-table-column
+        width="110"
+        label="周积分"
+        sortable
+        prop="group_points_week"
+        align="center"
+        :resizable="false"
+      ></el-table-column>
+      <el-table-column
+        label="月积分"
+        width="110"
+        sortable
+        prop="group_points_month"
+        align="center"
+        :resizable="false"
+      ></el-table-column>
+      <el-table-column
+        label="年积分"
+        width="110"
+        sortable
+        prop="group_points_year"
+        align="center"
+        :resizable="false"
+      ></el-table-column>
+      <el-table-column
+        label="永久积分"
+        width="110"
+        sortable
+        prop="group_points_free"
+        align="center"
+        :resizable="false"
+      ></el-table-column>
       <el-table-column label="备注" prop="group_remarks" width="420" :resizable="false"></el-table-column>
       <el-table-column label="操作" width="280" :resizable="false">
         <template slot-scope="scope">
@@ -61,19 +96,13 @@
 </template>
 
 <script>
-import {
-  deleteGroup,
-  fetchAllGroup,
-  deleteManyGroup,
-  updateGroup,
-} from "@/api/group";
+import { deleteGroup, fetchAllGroup, updateGroup } from "@/api/group";
 import EditGroup from "./components/editGroup";
 export default {
   name: "Group",
   components: { EditGroup },
   data() {
     return {
-      multipleSelection: [],
       dialogModel: false,
       dialogfillId: "",
       dialogFormVisible: false,
@@ -87,12 +116,8 @@ export default {
   },
   // 方法
   methods: {
-    // 多选改变
-    handleSelectionChange(val) {
-      this.multipleSelection = val.map((item) => item._id);
-    },
     // 单个改变状态
-    changeStatus(_id, status, index) {
+    changeStatus(_id, status) {
       updateGroup(_id, {
         group_status: status,
       }).then(() => {
@@ -103,11 +128,11 @@ export default {
       });
     },
     // 添加/修改 数据成功
-    editSuccess(val) {
+    editSuccess() {
       this.getList();
     },
     // 添加/修改 数据失败
-    editError(error) {},
+    editError() {},
     // 获取全部权限组列表列表
     getList() {
       this.listLoading = true;
@@ -122,23 +147,8 @@ export default {
       this.dialogfillId = "";
       this.dialogFormVisible = true;
     },
-    // 多选删除
-    handleDelete() {
-      if (this.multipleSelection.length === 0) {
-        this.$message.warning({
-          message: "未选择任何数据",
-        });
-        return;
-      }
-      deleteManyGroup(this.multipleSelection).then(() => {
-        this.$message.success({
-          message: "操作成功",
-        });
-        this.getList();
-      });
-    },
     // 单个项目编辑
-    handleEditOne(_id, index) {
+    handleEditOne(_id) {
       this.dialogModel = "upDate";
       this.dialogfillId = _id;
       this.dialogFormVisible = true;
