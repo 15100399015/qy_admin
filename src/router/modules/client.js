@@ -12,10 +12,16 @@ const userRouter = {
   },
   children: [
     {
-      path: "ads",
-      component: () => import("@/views/client/ads"),
-      name: "ads",
+      path: "config-ads",
+      component: () => import("@/views/client/configAds"),
+      name: "configADs",
       meta: { title: "广告管理" },
+    },
+    {
+      path: "config-play",
+      component: () => import("@/views/client/configPlay"),
+      name: "configPlay",
+      meta: { title: "播放器配置" },
     },
   ],
 };

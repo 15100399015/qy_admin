@@ -1,5 +1,5 @@
 <template>
-  <div>会员参数</div>
+  <div>播放器配置</div>
 </template>
 
 <script>

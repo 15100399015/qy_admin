@@ -13,11 +13,42 @@ const tableRouter = {
   },
   children: [
     {
-      path: "user-param",
-      component: () => import("@/views/system/userParam"),
-      name: "UserParam",
-      meta: { title: "会员参数" },
+      path: "config-user",
+      component: () => import("@/views/system/configUser"),
+      name: "configUser",
+      meta: { title: "会员参数配置" },
     },
+    {
+      path: "config-comment",
+      component: () => import("@/views/system/configComment"),
+      name: "configComment",
+      meta: { title: "评论采集配置" },
+    },
+    {
+      path: "config-collect",
+      component: () => import("@/views/system/configCollect"),
+      name: "configCollect",
+      meta: { title: "采集参数配置" },
+    },
+    {
+      path: "config-email",
+      component: () => import("@/views/system/configEmail"),
+      name: "configEmail",
+      meta: { title: "邮件发送配置" },
+    },
+    {
+      path: "config-sms",
+      component: () => import("@/views/system/configSms"),
+      name: "configSms",
+      meta: { title: "短信发送配置" },
+    },
+    {
+      path: "config-upload",
+      component: () => import("@/views/system/configUpload"),
+      name: "configUpload",
+      meta: { title: "附件参数配置" },
+      
+    }
   ],
 };
 export default tableRouter;

@@ -1,5 +1,5 @@
 <template>
-  <div>我是你</div>
+  <div>邮件发送配置</div>
 </template>
 
 <script>
