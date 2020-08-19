@@ -133,7 +133,7 @@ export default {
           if (state !== false) {
             this.$refs["groupFrom"].resetFields();
             this.$emit("on-success", state);
-            this.onClose();
+            this._visible = false;
           } else {
             this.$emit("on-error");
           }

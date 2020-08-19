@@ -10,14 +10,14 @@
       v-loading="listLoading"
       :show-overflow-tooltip="true"
     >
-      <el-table-column label="索引" width="110" type="index" align="center" :resizable="false"></el-table-column>
+      <el-table-column label="索引" width="66" type="index" align="center" :resizable="false"></el-table-column>
       <el-table-column label="名称" width="185" prop="group_name" :resizable="false">
         <template slot-scope="{row}">
           {{row.group_name}}
           <span :style="`color:${row.group_color}`">emmm</span>
         </template>
       </el-table-column>
-      <el-table-column label="状态" prop="group_status" align="center" :resizable="false">
+      <el-table-column label="状态" prop="group_status" width="95" align="center" :resizable="false">
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.group_status"
@@ -27,14 +27,14 @@
       </el-table-column>
       <el-table-column
         label="天积分"
-        width="110"
+        width="105"
         sortable
         prop="group_points_day"
         align="center"
         :resizable="false"
       ></el-table-column>
       <el-table-column
-        width="110"
+        width="105"
         label="周积分"
         sortable
         prop="group_points_week"
@@ -43,7 +43,7 @@
       ></el-table-column>
       <el-table-column
         label="月积分"
-        width="110"
+        width="105"
         sortable
         prop="group_points_month"
         align="center"
@@ -51,7 +51,7 @@
       ></el-table-column>
       <el-table-column
         label="年积分"
-        width="110"
+        width="105"
         sortable
         prop="group_points_year"
         align="center"
@@ -59,14 +59,14 @@
       ></el-table-column>
       <el-table-column
         label="永久积分"
-        width="110"
+        width="105"
         sortable
         prop="group_points_free"
         align="center"
         :resizable="false"
       ></el-table-column>
-      <el-table-column label="备注" prop="group_remarks" width="420" :resizable="false"></el-table-column>
-      <el-table-column label="操作" width="280" :resizable="false">
+      <el-table-column label="备注" prop="group_remarks" :resizable="false"></el-table-column>
+      <el-table-column label="操作" width="195" align="center" :resizable="false">
         <template slot-scope="scope">
           <el-button
             @click="handleEditOne(scope.row._id,scope.$index)"
