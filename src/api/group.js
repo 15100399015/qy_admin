@@ -9,7 +9,6 @@ export function fetchGroupList(rule) {
     },
   });
 }
-// 根据id获取一条数据
 export function fetchOneGroup(_id) {
   return request({
     url: "/group/findOne",
@@ -23,7 +22,7 @@ export function fetchOneGroup(_id) {
     },
   });
 }
-// 获取所有数据
+
 export function fetchAllGroup(rule) {
   return request({
     url: "/group/findAll",
@@ -33,7 +32,6 @@ export function fetchAllGroup(rule) {
     },
   });
 }
-// 创建一条数据
 export function createGroup(data) {
   return request({
     url: "/group/create",
@@ -41,7 +39,6 @@ export function createGroup(data) {
     data,
   });
 }
-// 更新一条数据
 export function updateGroup(id, data) {
   return request({
     url: "/group/update/" + id,
@@ -49,15 +46,12 @@ export function updateGroup(id, data) {
     data,
   });
 }
-// 删除一条数据
 export function deleteGroup(id) {
   return request({
     url: "/group/delete/" + id,
     method: "delete",
   });
 }
-
-// 更新状态
 export function changStatus(id, status) {
   return request({
     url: "/group/changStatus/" + id,

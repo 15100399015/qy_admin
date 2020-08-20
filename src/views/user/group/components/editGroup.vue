@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-el-drag-dialog
-    title="编辑权限"
+    :title="title"
     :visible.sync="_visible"
     :lock-scroll="true"
     :close-on-click-modal="false"
@@ -103,12 +103,13 @@ export default {
   },
   methods: {
     onOpen() {
+      if (this.model === "create") {
+        this.title = "创建权限组";
+      }
       if (this.model === "upDate") {
+        this.title = "编辑权限组";
         this.getFillInfo();
       }
-    },
-    handleClose() {
-      this._visible = false;
     },
     onClose() {
       this.$refs["groupFrom"].resetFields();
@@ -142,6 +143,9 @@ export default {
           return false;
         }
       });
+    },
+    handleClose() {
+      this._visible = false;
     },
     handleCreate() {
       return createGroup(this.groupParam)
@@ -180,6 +184,7 @@ export default {
   },
   data() {
     return {
+      title: "",
       groupParam: {
         group_name: "",
         group_status: true,

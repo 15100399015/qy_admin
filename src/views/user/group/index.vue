@@ -84,7 +84,6 @@
       </el-table-column>
     </el-table>
     <!-- 添加/修改弹窗 -->
-    <!-- 是否显示，模式，数据填充id -->
     <edit-group
       :visible.sync="dialogFormVisible"
       :model="dialogModel"
@@ -116,10 +115,8 @@ export default {
     };
   },
   created() {
-    // 获取列表
     this.getList();
   },
-  // 方法
   methods: {
     // 单个改变状态
     changeStatus(_id, status, index) {
@@ -158,7 +155,12 @@ export default {
     },
     // 单个项目删除
     handleDeleteOne(_id) {
-      deleteGroup(_id).then(this.getList);
+      deleteGroup(_id).then(() => {
+        this.$message.success({
+          message: "删除成功",
+        });
+        this.getList();
+      });
     },
   },
 };
