@@ -71,8 +71,8 @@
         </el-col>
       </el-row>
 
-      <el-form-item label="权限组" prop="group_id">
-        <el-select v-model="typeParam.group_id" multiple placeholder="请选择" style="width:100%">
+      <el-form-item label="权限组" prop="group_ids">
+        <el-select v-model="typeParam.group_ids" multiple placeholder="请选择" style="width:100%">
           <el-option
             v-for="item in paramOptions.group"
             :key="item._id"
@@ -168,12 +168,13 @@ import {
   fetchTypeList,
   fetchTypeOne,
   updateType,
+  findType1,
 } from "@/api/type";
 import { fetchAllGroup } from "@/api/group";
 import elDragDialog from "@/directive/el-drag-dialog";
 import { getToken } from "@/utils/auth";
 export default {
-  props: ["visible", "model", "fillId", "type1Id"],
+  props: ["visible", "model", "fillId"],
   directives: { elDragDialog },
   computed: {
     _visible: {
@@ -201,39 +202,42 @@ export default {
         this.getFillInfo();
       }
       if (this.model === "addChildren") {
+        this.getFillInfo();
       }
       this.getType_1();
       this.getGroup();
     },
-    // 关闭
+    // 关闭h回调
     onClose() {
-      this.$emit("update:visible", false);
       this.$refs["typeFrom"].resetFields();
     },
-    // 获取现有分类
-    getType_1() {
-      fetchTypeList({
-        where: {
-          type_pid: "",
-          type_mid: this.typeParam.type_mid,
-        },
-        limit: null,
-      }).then(({ data }) => {
-        this.paramOptions.type_pid = data.map((item) => ({
-          label: item.type_name,
-          _id: item._id,
-        }));
-        if (this.model === "addChildren") {
-          this.typeParam.type_pid = this.type1Id;
-        }
-      });
-    },
+    // 获取填充数据
     getFillInfo() {
       fetchTypeOne(this.fillId).then((data) => {
         Object.keys(this.typeParam).forEach((item) => {
           this.typeParam[item] = data[item];
         });
+        this.fillEnd();
       });
+    },
+    // 获取现有分类
+    getType_1() {
+      findType1(this.typeParam.type_mid).then((data) => {
+        this.paramOptions.type_pid = data.map((item) => ({
+          label: item.type_name,
+          _id: item._id,
+        }));
+        this.fillEnd();
+      });
+    },
+    // 填充结束
+    fillEnd() {
+      console.log("填充结束");
+      if (this.model === "upDate") {
+        
+      }
+      if (this.model === "addChildren") {
+      }
     },
     // 获取用户组
     getGroup() {
@@ -259,9 +263,8 @@ export default {
             state = await this.handleUpDate();
           }
           if (state !== false) {
-            this.$refs["typeFrom"].resetFields();
             this.$emit("on-success", state);
-            this.onClose();
+            this.handleClose();
           } else {
             this.$emit("on-error");
           }
@@ -323,18 +326,8 @@ export default {
   },
   data() {
     return {
-      // 空字符串占位符
-      emptyStr: "",
-      // 上传请求头部
-      uploadHeader: {
-        token: getToken(),
-      },
-      // logo 上传加载
-      logoLoading: false,
-      // 图片上传加载
-      picLoading: false,
       typeParam: {
-        group_id: [],
+        group_ids: [],
         type_mid: 1,
         type_name: "",
         type_en: "",
@@ -349,6 +342,17 @@ export default {
         type_pid: [],
         group: [],
       },
+      // 空字符串占位符
+      emptyStr: "",
+      // 上传请求头部
+      uploadHeader: {
+        token: getToken(),
+      },
+      // logo 上传加载
+      logoLoading: false,
+      // 图片上传加载
+      picLoading: false,
+      // 验证规则
       rules: {
         type_name: {
           required: true,
@@ -367,7 +371,7 @@ export default {
           message: "检查父分类",
           trigger: "submit",
         },
-        group_id: {
+        group_ids: {
           required: true,
           type: "array",
           defaultField: { type: "string" },

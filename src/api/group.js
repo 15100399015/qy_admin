@@ -56,3 +56,12 @@ export function deleteGroup(id) {
     method: "delete",
   });
 }
+
+// 更新状态
+export function changStatus(id, status) {
+  return request({
+    url: "/group/changStatus/" + id,
+    method: "put",
+    data: { status },
+  });
+}

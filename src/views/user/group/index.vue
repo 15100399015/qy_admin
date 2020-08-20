@@ -96,7 +96,12 @@
 </template>
 
 <script>
-import { deleteGroup, fetchAllGroup, updateGroup } from "@/api/group";
+import {
+  deleteGroup,
+  fetchAllGroup,
+  updateGroup,
+  changStatus,
+} from "@/api/group";
 import EditGroup from "./components/editGroup";
 export default {
   name: "Group",
@@ -117,10 +122,8 @@ export default {
   // 方法
   methods: {
     // 单个改变状态
-    changeStatus(_id, status) {
-      updateGroup(_id, {
-        group_status: status,
-      }).then(() => {
+    changeStatus(_id, status, index) {
+      changStatus(_id, status).then(() => {
         this.$message.success({
           message: "更新成功",
         });

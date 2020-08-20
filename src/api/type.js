@@ -1,36 +1,19 @@
 import request from "@/utils/request";
-
-export function fetchTypeList(rule) {
-  return request({
-    url: "/type/find",
-    method: "get",
-    params: {
-      query: JSON.stringify(rule),
-    },
-  });
-}
-
+// 获取所有
 export function fetchAllType() {
   return request({
     url: "/type/findAll",
     method: "get",
   });
 }
-
-export function fetchTypeOne(_id) {
+// 获取单个
+export function fetchTypeOne(id) {
   return request({
-    url: "/type/findOne/",
+    url: "/type/findOne/" + id,
     method: "get",
-    params: {
-      query: JSON.stringify({
-        where: {
-          _id,
-        },
-      }),
-    },
   });
 }
-
+// 创建
 export function createType(data) {
   return request({
     url: "/type/create",
@@ -38,23 +21,12 @@ export function createType(data) {
     data,
   });
 }
-
-export function updateType(id, data) {
+// 更新状态
+export function changStatus(id, status) {
   return request({
-    url: "/type/update/" + id,
+    url: "/type/changStatus/" + id,
     method: "put",
-    data,
-  });
-}
-
-export function updateManyType(conditions, doc) {
-  return request({
-    url: "/type/update",
-    method: "put",
-    data: {
-      conditions,
-      doc,
-    },
+    data: { status },
   });
 }
 // 删除一条数据
@@ -65,13 +37,27 @@ export function deleteType(id) {
   });
 }
 
-// 删除一条数据
+// 删除多条数据
 export function deleteManyType(_idArr) {
   return request({
     url: "/type/deleteMany",
     method: "delete",
-    data: {
-      conditions: { _id: { $in: _idArr } },
-    },
+    data: _idArr,
+  });
+}
+
+// 获取一级分类
+export function findType1(mid) {
+  return request({
+    url: "/type/findType1/" + mid,
+    method: "get",
+  });
+}
+
+export function updateType(id, doc) {
+  return request({
+    url: "/type/update/" + id,
+    method: "put",
+    data: doc,
   });
 }
