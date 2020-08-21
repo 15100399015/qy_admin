@@ -29,7 +29,12 @@
       </el-table-column>
       <el-table-column label="权限">
         <template slot-scope="{row}">
-          <el-tag v-for="tag in row.group_ids" :key="tag" type="info">{{tag.group_name}}</el-tag>
+          <el-tag
+            v-for="tag in row.group_ids"
+            effect="plain"
+            :key="tag"
+            :style="`border-color:${groupIdToNameAndColor(tag).group_color};color:${groupIdToNameAndColor(tag).group_color};margin-right:9px`"
+          >{{groupIdToNameAndColor(tag).group_name}}</el-tag>
         </template>
       </el-table-column>
       <el-table-column label="操作" width="280">
@@ -82,22 +87,24 @@ export default {
       },
       list: [],
       listLoading: true,
-      groupList: {},
+      groupList: [],
     };
   },
   created() {
-    // 获取分类所有列表
     this.getList();
+    this.getGroupList();
   },
   // 方法
   methods: {
+    groupIdToNameAndColor(id) {
+      return this.groupList[id];
+    },
     // 多选改变触发
     handleSelectionChange(val) {
       this.multipleSelection = val.map((item) => item._id);
     },
     // 编辑提交之后
     editSuccess(val) {
-      // 重新获取数据列表
       this.getList();
     },
     // 编辑数据失败
@@ -159,6 +166,16 @@ export default {
     getList() {
       fetchAllType().then((data) => {
         this.list = data;
+      });
+    },
+    getGroupList() {
+      fetchAllGroup({}).then((data) => {
+        data.forEach(({ group_name, group_color, _id }) => {
+          this.groupList[_id] = {
+            group_name,
+            group_color,
+          };
+        });
       });
     },
   },

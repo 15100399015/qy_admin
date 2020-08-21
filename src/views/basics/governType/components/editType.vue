@@ -22,7 +22,11 @@
       <el-row :gutter="10">
         <el-col :span="12">
           <el-form-item label="分类类型" prop="type_mid">
-            <el-select v-model="typeParam.type_mid" placeholder="选择类型">
+            <el-select
+              :disabled="paramOptions.midDisabled"
+              v-model="typeParam.type_mid"
+              placeholder="选择类型"
+            >
               <el-option label="视频" :value="1"></el-option>
               <el-option label="文章" :value="2"></el-option>
             </el-select>
@@ -30,7 +34,11 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="父级分类" prop="type_pid">
-            <el-select v-model="typeParam.type_pid" placeholder="请选父分类">
+            <el-select
+              :disabled="paramOptions.pidDisabled"
+              v-model="typeParam.type_pid"
+              placeholder="请选父分类"
+            >
               <el-option key="emptyStr" label="顶级分类" :value="emptyStr"></el-option>
               <el-option
                 v-for="item in paramOptions.type_pid"
@@ -197,15 +205,18 @@ export default {
     },
     onOpen() {
       if (this.model === "create") {
+        this.paramOptions.midDisabled = false;
+        this.paramOptions.pidDisabled = false;
       }
       if (this.model === "upDate") {
-        this.getFillInfo();
       }
       if (this.model === "addChildren") {
-        this.getFillInfo();
       }
-      this.getType_1();
-      this.getGroup();
+      Promise.all([this.getType_1(), this.getGroup()]).then(() => {
+        if (this.model === "upDate" || this.model === "addChildren") {
+          this.getFillInfo();
+        }
+      });
     },
     // 关闭h回调
     onClose() {
@@ -214,34 +225,39 @@ export default {
     // 获取填充数据
     getFillInfo() {
       fetchTypeOne(this.fillId).then((data) => {
+        this.fillEnd(data);
+      });
+    },
+    fillEnd(data) {
+      if (this.model === "upDate") {
         Object.keys(this.typeParam).forEach((item) => {
           this.typeParam[item] = data[item];
         });
-        this.fillEnd();
-      });
+        this.paramOptions.midDisabled = true;
+        this.paramOptions.pidDisabled = false;
+      }
+      if (this.model === "addChildren") {
+        this.typeParam.type_mid = data.type_mid;
+        this.typeParam.type_pid = data._id;
+        this.typeParam.group_ids = data.group_ids;
+        this.paramOptions.midDisabled = true;
+        this.paramOptions.pidDisabled = true;
+      }
+      if (this.model === "create") {
+      }
     },
     // 获取现有分类
     getType_1() {
-      findType1(this.typeParam.type_mid).then((data) => {
+      return findType1(this.typeParam.type_mid).then((data) => {
         this.paramOptions.type_pid = data.map((item) => ({
           label: item.type_name,
           _id: item._id,
         }));
-        this.fillEnd();
       });
-    },
-    // 填充结束
-    fillEnd() {
-      console.log("填充结束");
-      if (this.model === "upDate") {
-        
-      }
-      if (this.model === "addChildren") {
-      }
     },
     // 获取用户组
     getGroup() {
-      fetchAllGroup().then((data) => {
+      return fetchAllGroup().then((data) => {
         this.paramOptions.group = data.map((item) => ({
           label: item.group_name,
           _id: item._id,
@@ -339,6 +355,8 @@ export default {
         type_extend: "",
       },
       paramOptions: {
+        midDisabled: false,
+        pidDisabled: false,
         type_pid: [],
         group: [],
       },
