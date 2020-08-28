@@ -110,7 +110,7 @@ export default {
       dialogModel: false,
       dialogfillId: "",
       dialogFormVisible: false,
-      list: null,
+      list: [],
       listLoading: false,
     };
   },

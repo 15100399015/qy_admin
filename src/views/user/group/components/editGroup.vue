@@ -69,11 +69,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="颜色" prop="group_color">
-            <el-color-picker
-              show-alpha
-              v-model="groupParam.group_color"
-              :predefine="paramOption.predefineColors"
-            ></el-color-picker>
+            <el-color-picker v-model="groupParam.group_color" color-format="rgb"></el-color-picker>
           </el-form-item>
         </el-col>
       </el-row>
@@ -196,24 +192,7 @@ export default {
         group_remarks: "",
         group_color: "",
       },
-      paramOption: {
-        predefineColors: [
-          "#ff4500",
-          "#ff8c00",
-          "#ffd700",
-          "#90ee90",
-          "#00ced1",
-          "#1e90ff",
-          "#c71585",
-          "rgba(255, 69, 0, 0.68)",
-          "rgb(255, 120, 0)",
-          "hsv(51, 100, 98)",
-          "hsva(120, 40, 94, 0.5)",
-          "hsl(181, 100%, 37%)",
-          "hsla(209, 100%, 56%, 0.73)",
-          "#c7158577",
-        ],
-      },
+      paramOption: {},
       rules: {
         group_name: {
           required: true,
