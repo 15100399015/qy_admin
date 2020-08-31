@@ -166,20 +166,26 @@ export default {
       },
     };
   },
+  created() {
+    this.findSetting();
+  },
   methods: {
     onSubmit() {
-      this.upSetting().then(this.findSetting);
+      this.upSetting();
     },
     upSetting() {
       let { userSettingFrom, settingPath } = this;
-      return setSetting(settingPath, userSettingFrom).then(() => {
-        console.log("成功");
+      return setSetting(settingPath, userSettingFrom).then((data) => {
+        this.mergeSetting(data);
       });
     },
     findSetting() {
       getSetting(this.settingPath).then((data) => {
-        console.log(data);
+        this.mergeSetting(data);
       });
+    },
+    mergeSetting(newSetting) {
+      Object.assign(this.userSettingFrom, newSetting);
     },
   },
 };
