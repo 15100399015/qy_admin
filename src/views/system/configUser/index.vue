@@ -1,7 +1,6 @@
 <template>
   <div class="app-container">
     <el-form label-width="135px" label-position="left" v-loading="loading">
-      
       <el-row>
         <el-col :span="6">
           <el-form-item label="会员模块：">
@@ -52,7 +51,7 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="注册送分：">
-            <el-input-number v-model="userSettingFrom.reg_points"></el-input-number>
+            <el-input-number v-model="userSettingFrom.reg_give_points"></el-input-number>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -90,19 +89,6 @@
 
       <el-row>
         <el-col :span="6">
-          <el-form-item label="分销状态：">
-            <el-switch v-model="userSettingFrom.reward_status" active-text="开启" inactive-text="关闭"></el-switch>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="一级提成比例：">
-            <el-input-number v-model="userSettingFrom.reward_ratio"></el-input-number>
-          </el-form-item>
-        </el-col>
-      </el-row>
-
-      <el-row>
-        <el-col :span="6">
           <el-form-item label="兑换比例：">
             <el-input-number v-model="userSettingFrom.cash_ratio"></el-input-number>
           </el-form-item>
@@ -116,13 +102,26 @@
 
       <el-row>
         <el-col :span="6">
+          <el-form-item label="分销状态：">
+            <el-switch v-model="userSettingFrom.reward_status" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="提成比例：">
+            <el-input-number v-model="userSettingFrom.reward_ratio"></el-input-number>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="6">
           <el-form-item label="试看状态">
             <el-switch v-model="userSettingFrom.trysee_status" active-text="开启" inactive-text="关闭"></el-switch>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="试看时长：">
-            <el-input-number v-model="userSettingFrom.trysee"></el-input-number>
+            <el-input-number v-model="userSettingFrom.trysee_time"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
@@ -130,14 +129,14 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="视频收费方式：">
-            <el-radio v-model="userSettingFrom.vod_points_type" label="1">每集</el-radio>
-            <el-radio v-model="userSettingFrom.vod_points_type" label="2">每数据</el-radio>
+            <el-radio v-model="userSettingFrom.vod_points_type" :label="1">每集</el-radio>
+            <el-radio v-model="userSettingFrom.vod_points_type" :label="2">每数据</el-radio>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="文章收费方式：">
-            <el-radio v-model="userSettingFrom.art_points_type" label="1">每篇</el-radio>
-            <el-radio v-model="userSettingFrom.art_points_type" label="2">每数据</el-radio>
+            <el-radio v-model="userSettingFrom.art_points_type" :label="1">每篇</el-radio>
+            <el-radio v-model="userSettingFrom.art_points_type" :label="2">每数据</el-radio>
           </el-form-item>
         </el-col>
       </el-row>
