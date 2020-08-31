@@ -55,7 +55,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="每日ip限制：">
+          <el-form-item label="每日IP限制：">
             <el-input-number v-model="userSettingFrom.reg_num"></el-input-number>
           </el-form-item>
         </el-col>
@@ -63,6 +63,11 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="邀请注册积分：">
+            <el-input-number v-model="userSettingFrom.invite_reg_points"></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="每日IP限制：">
             <el-input-number v-model="userSettingFrom.invite_reg_points"></el-input-number>
           </el-form-item>
         </el-col>
@@ -74,7 +79,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="每日ip限制：">
+          <el-form-item label="每日IP限制：">
             <el-input-number v-model="userSettingFrom.invite_visit_num"></el-input-number>
           </el-form-item>
         </el-col>
@@ -143,29 +148,67 @@ export default {
       loading: true,
       originalSetting: null,
       userSettingFrom: {
+        // 会员状态
         status: true,
+
+        // 开始注册
         reg_open: true,
+        // 注册审核状态
         reg_status: true,
+
+        // 注册手机验证
         reg_phone_sms: false,
+        // 注册邮箱验证
         reg_email_sms: false,
+
+        // 注册验证码
         reg_verify: false,
+        // 登录验证码
         login_verify: false,
-        reg_points: 10,
-        reg_num: 0,
+
+        // 注册赠送积分
+        reg_give_points: 10,
+        //单个ip每日注册数量
+        reg_day_ip_num: 0,
+
+        // 邀请注册积分
         invite_reg_points: 10,
+        // ip每日邀请注册限制
+        invite_reg_ip_num: 10,
+
+        // 访问推广积分
         invite_visit_points: 1,
-        invite_visit_num: 0,
+        // ip每日推广限制
+        invite_visit_ip_num: 0,
+
+        // 分销状态
         reward_status: true,
+        // 一级分销提成比例
         reward_ratio: 1,
+        // 二级分销提成比例
         reward_ratio_2: 3,
+        // 三级分销提成比例
         reward_ratio_3: 5,
-        cash_status: true,
+
+        // 积分=现金 比例
         cash_ratio: 100,
-        cash_min: 1,
-        trysee: 0,
+        // 最小充值金额
+        cash_num_min: 1,
+
+        // 开始试看
+        trysee_status: 0,
+        // 试看时常
+        trysee_time: 0,
+
+        // 视频收费方式
         vod_points_type: 1,
+
+        // 开启上传头像
         portrait_status: true,
+        // 头像大小限制
         portrait_size: "100x100",
+        
+        // 过滤用户名
         filter_words: "admin,cao,sex,xxx",
       },
     };
