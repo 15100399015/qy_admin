@@ -4,24 +4,43 @@
       <el-form-item label="会员模块：">
         <el-switch v-model="userSettingFrom.status" active-text="开启" inactive-text="关闭"></el-switch>
       </el-form-item>
-      <el-form-item label="注册开关：">
-        <el-switch v-model="userSettingFrom.reg_open" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
-      <el-form-item label="注册状态：">
-        <el-switch v-model="userSettingFrom.reg_status" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
-      <el-form-item label="手机注册验证：">
-        <el-switch v-model="userSettingFrom.reg_phone_sms" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
-      <el-form-item label="邮箱注册验证：">
-        <el-switch v-model="userSettingFrom.reg_email_sms" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
-      <el-form-item label="注册验证码：">
-        <el-switch v-model="userSettingFrom.reg_verify" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
-      <el-form-item label="登录验证码：">
-        <el-switch v-model="userSettingFrom.login_verify" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
+
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="注册开关：">
+            <el-switch v-model="userSettingFrom.reg_open" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="注册状态：">
+            <el-switch v-model="userSettingFrom.reg_status" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="手机注册验证：">
+            <el-switch v-model="userSettingFrom.reg_phone_sms" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="邮箱注册验证：">
+            <el-switch v-model="userSettingFrom.reg_email_sms" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="注册验证码：">
+            <el-switch v-model="userSettingFrom.reg_verify" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="登录验证码：">
+            <el-switch v-model="userSettingFrom.login_verify" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-row>
         <el-col :span="12">
           <el-form-item label="注册送分：">
