@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <el-form label-width="135px" label-position="left" v-loading="loading">
+      
       <el-row>
         <el-col :span="6">
           <el-form-item label="会员模块：">
@@ -56,10 +57,11 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="每日IP限制：">
-            <el-input-number v-model="userSettingFrom.reg_num"></el-input-number>
+            <el-input-number v-model="userSettingFrom.reg_day_ip_num"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-row>
         <el-col :span="6">
           <el-form-item label="邀请注册积分：">
@@ -68,10 +70,11 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="每日IP限制：">
-            <el-input-number v-model="userSettingFrom.invite_reg_points"></el-input-number>
+            <el-input-number v-model="userSettingFrom.invite_reg_day_ip_num"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-row>
         <el-col :span="6">
           <el-form-item label="推广访问积分：">
@@ -80,39 +83,50 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="每日IP限制：">
-            <el-input-number v-model="userSettingFrom.invite_visit_num"></el-input-number>
+            <el-input-number v-model="userSettingFrom.invite_visit_day_ip_num"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="分销状态：">
-        <el-switch v-model="userSettingFrom.reward_status" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
+
       <el-row>
+        <el-col :span="6">
+          <el-form-item label="分销状态：">
+            <el-switch v-model="userSettingFrom.reward_status" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
         <el-col :span="6">
           <el-form-item label="一级提成比例：">
             <el-input-number v-model="userSettingFrom.reward_ratio"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="二级提成比例：">
-            <el-input-number v-model="userSettingFrom.reward_ratio_2"></el-input-number>
-          </el-form-item>
-        </el-col>
       </el-row>
+
       <el-row>
         <el-col :span="6">
           <el-form-item label="兑换比例：">
             <el-input-number v-model="userSettingFrom.cash_ratio"></el-input-number>
           </el-form-item>
         </el-col>
+        <el-col :span="6">
+          <el-form-item label="最小充值金额">
+            <el-input-number v-model="userSettingFrom.cash_num_min"></el-input-number>
+          </el-form-item>
+        </el-col>
       </el-row>
+
       <el-row>
+        <el-col :span="6">
+          <el-form-item label="试看状态">
+            <el-switch v-model="userSettingFrom.trysee_status" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
         <el-col :span="6">
           <el-form-item label="试看时长：">
             <el-input-number v-model="userSettingFrom.trysee"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-row>
         <el-col :span="6">
           <el-form-item label="视频收费方式：">
@@ -120,10 +134,26 @@
             <el-radio v-model="userSettingFrom.vod_points_type" label="2">每数据</el-radio>
           </el-form-item>
         </el-col>
+        <el-col :span="6">
+          <el-form-item label="文章收费方式：">
+            <el-radio v-model="userSettingFrom.art_points_type" label="1">每篇</el-radio>
+            <el-radio v-model="userSettingFrom.art_points_type" label="2">每数据</el-radio>
+          </el-form-item>
+        </el-col>
       </el-row>
-      <el-form-item label="头像上传：">
-        <el-switch v-model="userSettingFrom.portrait_status" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
+
+      <el-row>
+        <el-col :span="12">
+          <el-form-item label="头像上传：">
+            <el-switch
+              v-model="userSettingFrom.portrait_status"
+              active-text="开启"
+              inactive-text="关闭"
+            ></el-switch>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
       <el-row>
         <el-col :span="12">
           <el-form-item label="用户名过滤：">
@@ -131,6 +161,7 @@
           </el-form-item>
         </el-col>
       </el-row>
+
       <el-form-item label-width="0" style="text-align: center;">
         <el-button size="medium" type="primary" @click="onSubmit">更新</el-button>
         <el-button size="medium" @click="reduction">还原</el-button>
@@ -174,21 +205,17 @@ export default {
         // 邀请注册积分
         invite_reg_points: 10,
         // ip每日邀请注册限制
-        invite_reg_ip_num: 10,
+        invite_reg_day_ip_num: 10,
 
         // 访问推广积分
         invite_visit_points: 1,
         // ip每日推广限制
-        invite_visit_ip_num: 0,
+        invite_visit_day_ip_num: 0,
 
         // 分销状态
         reward_status: true,
         // 一级分销提成比例
         reward_ratio: 1,
-        // 二级分销提成比例
-        reward_ratio_2: 3,
-        // 三级分销提成比例
-        reward_ratio_3: 5,
 
         // 积分=现金 比例
         cash_ratio: 100,
@@ -202,12 +229,14 @@ export default {
 
         // 视频收费方式
         vod_points_type: 1,
+        // 文章收费方式
+        art_points_type: 1,
 
         // 开启上传头像
         portrait_status: true,
         // 头像大小限制
         portrait_size: "100x100",
-        
+
         // 过滤用户名
         filter_words: "admin,cao,sex,xxx",
       },
