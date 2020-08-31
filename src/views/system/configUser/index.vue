@@ -1,9 +1,13 @@
 <template>
   <div class="app-container">
-    <el-form label-width="120px" label-position="left" v-loading="loading">
-      <el-form-item label="会员模块：">
-        <el-switch v-model="userSettingFrom.status" active-text="开启" inactive-text="关闭"></el-switch>
-      </el-form-item>
+    <el-form label-width="135px" label-position="left" v-loading="loading">
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="会员模块：">
+            <el-switch v-model="userSettingFrom.status" active-text="开启" inactive-text="关闭"></el-switch>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
       <el-row>
         <el-col :span="6">
@@ -29,6 +33,9 @@
             <el-switch v-model="userSettingFrom.reg_email_sms" active-text="开启" inactive-text="关闭"></el-switch>
           </el-form-item>
         </el-col>
+      </el-row>
+
+      <el-row>
         <el-col :span="6">
           <el-form-item label="注册验证码：">
             <el-switch v-model="userSettingFrom.reg_verify" active-text="开启" inactive-text="关闭"></el-switch>
@@ -42,67 +49,67 @@
       </el-row>
 
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="注册送分：">
             <el-input-number v-model="userSettingFrom.reg_points"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="每日ip限制">
+        <el-col :span="6">
+          <el-form-item label="每日ip限制：">
             <el-input-number v-model="userSettingFrom.reg_num"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="邀请注册积分：">
             <el-input-number v-model="userSettingFrom.invite_reg_points"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="推广访问积分：">
             <el-input-number v-model="userSettingFrom.invite_visit_points"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
-          <el-form-item label="每日ip限制">
+        <el-col :span="6">
+          <el-form-item label="每日ip限制：">
             <el-input-number v-model="userSettingFrom.invite_visit_num"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item label="分销状态">
+      <el-form-item label="分销状态：">
         <el-switch v-model="userSettingFrom.reward_status" active-text="开启" inactive-text="关闭"></el-switch>
       </el-form-item>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="一级提成比例：">
             <el-input-number v-model="userSettingFrom.reward_ratio"></el-input-number>
           </el-form-item>
         </el-col>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="二级提成比例：">
             <el-input-number v-model="userSettingFrom.reward_ratio_2"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="兑换比例：">
             <el-input-number v-model="userSettingFrom.cash_ratio"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="试看时长：">
             <el-input-number v-model="userSettingFrom.trysee"></el-input-number>
           </el-form-item>
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="12">
+        <el-col :span="6">
           <el-form-item label="视频收费方式：">
             <el-radio v-model="userSettingFrom.vod_points_type" label="1">每集</el-radio>
             <el-radio v-model="userSettingFrom.vod_points_type" label="2">每数据</el-radio>
@@ -115,18 +122,13 @@
       <el-row>
         <el-col :span="12">
           <el-form-item label="用户名过滤：">
-            <el-input
-              v-model="userSettingFrom.filter_words"
-              type="textarea"
-              :rows="2"
-              placeholder="请输入内容"
-            ></el-input>
+            <el-input v-model="userSettingFrom.filter_words" type="textarea" :rows="3"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">更新</el-button>
-        <el-button>还原</el-button>
+      <el-form-item label-width="0" style="text-align: center;">
+        <el-button size="medium" type="primary" @click="onSubmit">更新</el-button>
+        <el-button size="medium" @click="reduction">还原</el-button>
       </el-form-item>
     </el-form>
   </div>
@@ -139,6 +141,7 @@ export default {
     return {
       settingPath: "user",
       loading: true,
+      originalSetting: null,
       userSettingFrom: {
         status: true,
         reg_open: true,
@@ -171,26 +174,32 @@ export default {
     this.findSetting();
   },
   methods: {
+    // 提交
     onSubmit() {
       this.upSetting();
     },
+    // 更新设置
     upSetting() {
       this.loading = true;
       let { userSettingFrom, settingPath } = this;
       return setSetting(settingPath, userSettingFrom).then((data) => {
-        this.mergeSetting(data);
+        Object.assign(this.userSettingFrom, data);
         this.loading = false;
+        this.$message.success("更新成功");
       });
     },
+    // 获取设定
     findSetting() {
       this.loading = true;
       getSetting(this.settingPath).then((data) => {
-        this.mergeSetting(data);
+        Object.assign(this.userSettingFrom, data);
+        if (!this.originalSetting) this.originalSetting = data;
         this.loading = false;
       });
     },
-    mergeSetting(newSetting) {
-      Object.assign(this.userSettingFrom, newSetting);
+    // 还原所有选项
+    reduction() {
+      this.userSettingFrom = this.originalSetting;
     },
   },
 };
