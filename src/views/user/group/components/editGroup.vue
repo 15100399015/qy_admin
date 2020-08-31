@@ -69,7 +69,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="颜色" prop="group_color">
-            <el-color-picker v-model="groupParam.group_color" color-format="rgb"></el-color-picker>
+            <el-color-picker v-model="groupParam.group_color" color-format="hex"></el-color-picker>
           </el-form-item>
         </el-col>
       </el-row>
