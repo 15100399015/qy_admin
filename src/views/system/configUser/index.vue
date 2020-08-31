@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <el-form label-width="120px" label-position="left">
+    <el-form label-width="120px" label-position="left" v-loading="loading">
       <el-form-item label="会员模块：">
         <el-switch v-model="userSettingFrom.status" active-text="开启" inactive-text="关闭"></el-switch>
       </el-form-item>
@@ -138,6 +138,7 @@ export default {
   data() {
     return {
       settingPath: "user",
+      loading: true,
       userSettingFrom: {
         status: true,
         reg_open: true,
@@ -174,14 +175,18 @@ export default {
       this.upSetting();
     },
     upSetting() {
+      this.loading = true;
       let { userSettingFrom, settingPath } = this;
       return setSetting(settingPath, userSettingFrom).then((data) => {
         this.mergeSetting(data);
+        this.loading = false;
       });
     },
     findSetting() {
+      this.loading = true;
       getSetting(this.settingPath).then((data) => {
         this.mergeSetting(data);
+        this.loading = false;
       });
     },
     mergeSetting(newSetting) {
