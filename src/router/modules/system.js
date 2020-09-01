@@ -13,6 +13,12 @@ const tableRouter = {
   },
   children: [
     {
+      path: "config-basic",
+      component: () => import("@/views/system/configBasic"),
+      name: "configBasic",
+      meta: { title: "系统基本配置" },
+    },
+    {
       path: "config-user",
       component: () => import("@/views/system/configUser"),
       name: "configUser",

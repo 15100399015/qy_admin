@@ -197,14 +197,14 @@ export default {
         login_verify: false,
 
         // 注册赠送积分
-        reg_give_points: 10,
+        reg_give_points: 30,
         //单个ip每日注册数量
         reg_day_ip_num: 0,
 
         // 邀请注册积分
-        invite_reg_points: 10,
+        invite_reg_points: 20,
         // ip每日邀请注册限制
-        invite_reg_day_ip_num: 10,
+        invite_reg_day_ip_num: 0,
 
         // 访问推广积分
         invite_visit_points: 1,
@@ -212,19 +212,19 @@ export default {
         invite_visit_day_ip_num: 0,
 
         // 分销状态
-        reward_status: true,
+        reward_status: false,
         // 一级分销提成比例
         reward_ratio: 1,
 
         // 积分=现金 比例
-        cash_ratio: 100,
+        cash_ratio: 1,
         // 最小充值金额
-        cash_num_min: 1,
+        cash_num_min: 10,
 
-        // 开始试看
-        trysee_status: 0,
+        // 开启试看
+        trysee_status: false,
         // 试看时常
-        trysee_time: 0,
+        trysee_time: 6,
 
         // 视频收费方式
         vod_points_type: 1,
