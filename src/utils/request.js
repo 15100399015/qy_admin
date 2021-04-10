@@ -1,49 +1,49 @@
-import axios from "axios";
-import { Message, Notification } from "element-ui";
-import store from "@/store";
-import { getToken } from "@/utils/auth";
-// import { syntaxHighlight } from "@/utils/syntaxHighlight";
+import axios from 'axios'
+import { Message, Notification } from 'element-ui'
+import store from '@/store'
+import { getToken } from '@/utils/auth'
 
 const service = axios.create({
   baseURL: process.env.VUE_APP_BASE_API,
-  timeout: 5000,
-});
+  timeout: 5000
+})
 
 // request interceptor
 service.interceptors.request.use(
-  (config) => {
+  config => {
     if (store.getters.token) {
-      config.headers["token"] = getToken();
+      config.headers['token'] = getToken()
     }
-    return config;
+    return config
   },
-  (error) => {
-    console.log(error); // for debug
+  error => {
     Message({
       message: error.message,
-      type: "error",
-    });
-    return Promise.reject(error);
+      type: 'error'
+    })
+    return Promise.reject(error)
   }
-);
+)
 
 // response interceptor
 service.interceptors.response.use(
-  ({ data }) => data,
-  (error) => {
-    const { response } = error;
-    console.error(response.data.message);
+  response => {
+    if (response.data.code === 20000) {
+      return response.data.data
+    }
     Notification.error({
-      title: "错误",
-      dangerouslyUseHTMLString: true,
-      message: response.data.message,
-      // message: syntaxHighlight(response.data, {
-      // height: "180px",
-      // indent: 1,
-      // }),
-    });
-    return Promise.reject(error);
+      title: 'Error',
+      message: response.data.message
+    })
+    return Promise.reject(response.data)
+  },
+  error => {
+    Notification.error({
+      title: 'Error',
+      message: error
+    })
+    return Promise.reject(error)
   }
-);
+)
 
-export default service;
+export default service

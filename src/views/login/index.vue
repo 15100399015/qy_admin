@@ -1,21 +1,16 @@
 <template>
   <div class="login-container">
-    <!--  表单 -->
     <el-form
       ref="loginForm"
       :model="loginForm"
       :rules="loginRules"
       class="login-form"
-      label-position="left"
     >
       <div class="title-container">
         <h3 class="title">轻娱后台</h3>
       </div>
-      <!-- 用户名 -->
+
       <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
         <el-input
           v-model="loginForm.username"
           placeholder="用户名"
@@ -26,9 +21,6 @@
       </el-form-item>
 
       <el-form-item prop="password">
-        <span class="svg-container">
-          <svg-icon icon-class="password" />
-        </span>
         <el-input
           v-model="loginForm.password"
           placeholder="密码"
@@ -42,63 +34,64 @@
       <el-button
         :loading="loading"
         type="primary"
-        style="width:100%;margin-bottom:30px;"
+        style="width: 100%"
         @click.native.prevent="handleLogin"
-      >登录</el-button>
+        >登录</el-button
+      >
     </el-form>
   </div>
 </template>
 
 <script>
 // 验证器
-import { validUsername } from "@/utils/validate";
+import { validUsername } from '@/utils/validate'
+// 用户名验证
+const validateUsername = (rule, value, callback) => {
+  if (value.length < 5) {
+    callback(new Error('请检查用户名'))
+  } else {
+    callback()
+  }
+}
+// 密码验证
+const validatePassword = (rule, value, callback) => {
+  if (value.length < 5) {
+    callback(new Error('请检查密码'))
+  } else {
+    callback()
+  }
+}
 export default {
-  name: "Login",
+  name: 'Login',
   data() {
-    // 用户名验证
-    const validateUsername = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error("请检查用户名"));
-      } else {
-        callback();
-      }
-    };
-    // 密码验证
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 5) {
-        callback(new Error("请检查密码"));
-      } else {
-        callback();
-      }
-    };
     return {
       // 表单项
       loginForm: {
-        username: "",
-        password: "",
+        username: '',
+        password: '',
       },
       // 表单验证规则
       loginRules: {
         username: [
-          { required: true, trigger: "change", validator: validateUsername },
+          { required: true, trigger: 'change', validator: validateUsername },
         ],
         password: [
-          { required: true, trigger: "change", validator: validatePassword },
+          { required: true, trigger: 'change', validator: validatePassword },
         ],
       },
       // 是否加载
       loading: false,
       // 重定向url
       redirect: undefined,
-    };
+    }
   },
   watch: {
     // 路由发生变化执行
     $route: {
       handler: function (route) {
-        const query = route.query;
+        const query = route.query
         if (query) {
-          this.redirect = query.redirect;
+          this.redirect = query.redirect
         }
       },
       immediate: true,
@@ -109,106 +102,80 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
-          this.loading = true;
+          this.loading = true
           this.$store
-            .dispatch("user/login", this.loginForm)
+            .dispatch('user/login', this.loginForm)
             .then(() => {
-              this.loading = false;
+              this.loading = false
               this.$router.push({
-                path: this.redirect || "/",
-              });
+                path: this.redirect || '/',
+              })
             })
             .catch(() => {
-              this.loading = false;
-            });
+              this.loading = false
+            })
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log('error submit!!')
+          return false
         }
-      });
+      })
     },
   },
-};
+}
 </script>
 
 <style lang="scss">
-$bg: #283443;
-$light_gray: #fff;
-$cursor: #fff;
-
-@supports (-webkit-mask: none) and (not (cater-color: $cursor)) {
-  .login-container .el-input input {
-    color: $cursor;
-  }
-}
-
-/* reset element-ui css */
 .login-container {
   .el-input {
     display: inline-block;
     height: 47px;
-    width: 85%;
+    width: 100%;
 
     input {
-      background: transparent;
+      background: none;
       border: 0px;
       -webkit-appearance: none;
       border-radius: 0px;
-      padding: 12px 5px 12px 15px;
-      color: $light_gray;
+      padding: 0;
+      color: #fff;
       height: 47px;
-      caret-color: $cursor;
-
-      &:-webkit-autofill {
-        box-shadow: 0 0 0px 1000px $bg inset !important;
-        -webkit-text-fill-color: $cursor !important;
-      }
+      caret-color: #fff;
     }
   }
 
   .el-form-item {
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
     color: #454545;
   }
 }
 </style>
 
 <style lang="scss" scoped>
-$bg: #2d3a4b;
-$dark_gray: #889aa4;
-$light_gray: #eee;
-
 .login-container {
-  min-height: 100%;
   width: 100%;
-  background-color: $bg;
+  height: 100%;
+  background-image: url('~@/assets/images/login_bg.jpg');
+  background-size: cover;
+  background-repeat: no-repeat;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   .login-form {
-    position: relative;
-    width: 520px;
-    max-width: 100%;
-    padding: 160px 35px 0;
-    margin: 0 auto;
+    width: 450px;
+    padding: 35px;
     overflow: hidden;
-  }
-
-  .svg-container {
-    padding: 6px 5px 6px 15px;
-    color: $dark_gray;
-    vertical-align: middle;
-    width: 30px;
-    display: inline-block;
+    border-radius: 3%;
+    background: rgba(0, 0, 0, 0.8);
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0, 0, 0, 0.5);
   }
 
   .title-container {
-    position: relative;
-
     .title {
       font-size: 26px;
-      color: $light_gray;
+      color: #eee;
       margin: 0px auto 40px auto;
       text-align: center;
       font-weight: bold;
@@ -216,3 +183,4 @@ $light_gray: #eee;
   }
 }
 </style>
+
